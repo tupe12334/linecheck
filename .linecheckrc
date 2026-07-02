@@ -1,0 +1,4 @@
+rules:
+  - pattern: "**/*.rs"
+    warn: 50
+    error: 50
