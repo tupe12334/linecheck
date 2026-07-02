@@ -2,7 +2,7 @@
 
 > **Alpha** — experimental, expect breaking changes.
 
-A fast, configurable tool that warns or errors when files exceed a set line count. Keep your files small by making the limit visible and enforced.
+Stop your AI agent from turning one file into a monolith. `linecheck` enforces per-file line limits so bloated files get caught before they pile up.
 
 ## Features
 
@@ -52,6 +52,12 @@ Override the line limit inline:
 linecheck --max-lines 200 src/
 ```
 
+Example output:
+```
+src/main.rs: 450 lines (error threshold: 400)
+src/utils.rs: 220 lines (warn threshold: 200)
+```
+
 ## Configuration
 
 Create a `linecheck.yml` at the root of your project:
@@ -76,15 +82,13 @@ CLI flags override config file values. Run `linecheck --help` for all options.
 
 **Exclude globs** — add an `exclude` list to `linecheck.yml` (see above).
 
-**Inline ignore** — add a comment at the top of a file to exempt it entirely:
+**Inline ignore** — add this comment anywhere in the file to exempt it entirely:
 
-```rust
-// linecheck:ignore
 ```
-
-```python
 # linecheck:ignore
 ```
+
+The file will be skipped regardless of its line count. There is no partial ignore — it's all-or-nothing.
 
 ## Exit codes
 
