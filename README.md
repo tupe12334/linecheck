@@ -68,3 +68,17 @@ rules:
     warn: 150
     error: 300
 ```
+
+CLI flags override config file values. Run `linecheck --help` for all options.
+
+## Exit codes
+
+| Code | Meaning                                      |
+| ---- | -------------------------------------------- |
+| `0`  | All files within limits                      |
+| `1`  | One or more files exceed the warn threshold  |
+| `2`  | One or more files exceed the error threshold |
+
+## License
+
+[MIT](LICENSE)
