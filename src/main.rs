@@ -58,8 +58,7 @@ fn main() -> Result<()> {
         else if args.free { Some(Preset::Free) }
         else { None };
 
-    let (fallback_warn, fallback_error) = preset
-        .map(|p| p.limits())
+    let (fallback_warn, fallback_error) = preset.map(|p| p.limits())
         .unwrap_or((Some(linecheck::preset::DEFAULT_WARN), Some(linecheck::preset::DEFAULT_ERROR)));
 
     let opts = CheckOptions { max_lines: args.max_lines, fallback_warn, fallback_error };
