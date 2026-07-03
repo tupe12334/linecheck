@@ -1,4 +1,5 @@
 //! YAML configuration loading and hierarchical resolution.
+use glob::Pattern;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -31,10 +32,24 @@ pub fn load_config(path: &Path) -> Config {
     let Ok(content) = fs::read_to_string(path) else {
         return Config::default();
     };
-    serde_yaml::from_str(&content).unwrap_or_else(|e| {
+    let cfg: Config = serde_yaml::from_str(&content).unwrap_or_else(|e| {
         eprintln!("Warning: failed to parse config {}: {}", path.display(), e);
         Config::default()
-    })
+    });
+    warn_invalid_patterns(&cfg, path);
+    cfg
+}
+
+fn warn_invalid_patterns(cfg: &Config, source: &Path) {
+    for rule in &cfg.rules {
+        if Pattern::new(&rule.pattern).is_err() {
+            eprintln!(
+                "Warning: invalid glob pattern {:?} in {} — rule will be skipped",
+                rule.pattern,
+                source.display()
+            );
+        }
+    }
 }
 
 /// Resolves per-file configs by walking up the directory tree,
