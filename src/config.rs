@@ -6,7 +6,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// A parsed `linecheck.yml` configuration file.
-#[derive(Debug, Deserialize, Default, Clone, PartialEq)]
+#[derive(Debug, Deserialize, Default, Clone, PartialEq, Eq)]
 pub struct Config {
     /// Ordered list of glob rules. The first matching rule wins.
     #[serde(default)]
@@ -17,7 +17,7 @@ pub struct Config {
 }
 
 /// A single pattern/limit pair inside a [`Config`].
-#[derive(Debug, Deserialize, Clone, PartialEq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct Rule {
     /// Glob pattern matched against file paths (e.g. `"**/*.rs"`).
     pub pattern: String,

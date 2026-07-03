@@ -1,7 +1,7 @@
 //! Built-in strictness presets.
 
 /// Built-in strictness presets applied when no config rule matches a file.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Preset {
     /// 100 lines — warn and error at the same threshold.
     Strict,
