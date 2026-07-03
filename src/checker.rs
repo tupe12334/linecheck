@@ -6,7 +6,6 @@ use crate::config::Config;
 use crate::lines::file_info;
 use crate::preset::{DEFAULT_ERROR, DEFAULT_WARN};
 use crate::result::{FileResult, Status};
-
 /// Options controlling how a single file is checked.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CheckOptions {
@@ -22,9 +21,7 @@ impl Default for CheckOptions {
         Self { max_lines: None, fallback_warn: Some(DEFAULT_WARN), fallback_error: Some(DEFAULT_ERROR) }
     }
 }
-
-/// Check a single file and return its [`FileResult`].
-/// Pass `None` for `config` to fall back to the thresholds in `opts`.
+/// Check a single file; pass `None` for `config` to fall back to the thresholds in `opts`.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
     let (lines, ignored) = file_info(path)?;
     if ignored { return Ok(FileResult { status: Status::Ok, lines, warn_limit: None, error_limit: None, message: None }); }
