@@ -8,7 +8,7 @@ use crate::lines::file_info;
 use crate::preset::{DEFAULT_ERROR, DEFAULT_WARN};
 
 /// The outcome of checking a single file against its line limits.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
 pub enum Status {
     /// Line count is within all limits.
     Ok,
