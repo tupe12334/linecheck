@@ -170,3 +170,18 @@ fn nested_config_overrides_parent() {
     assert_eq!(r.status, Status::Warn);
     assert_eq!(r.warn_limit, Some(2)); // sub config, not parent's 100
 }
+
+#[test]
+fn threshold_is_exclusive() {
+    // The limit is a strict upper bound: exactly N lines is Ok; N+1 triggers warn.
+    let dir = TempDir::new().unwrap();
+    let exactly = (0..3).map(|i| format!("line{i}\n")).collect::<String>(); // 3 lines
+    let path = write(dir.path(), "file.txt", &exactly);
+    let at = check_file(&path, Some(&cfg(3, 10)), &opts_unlimited()).unwrap();
+    assert_eq!(at.status, Status::Ok); // exactly at warn limit → still Ok
+
+    let over = (0..4).map(|i| format!("line{i}\n")).collect::<String>(); // 4 lines
+    let path2 = write(dir.path(), "file2.txt", &over);
+    let above = check_file(&path2, Some(&cfg(3, 10)), &opts_unlimited()).unwrap();
+    assert_eq!(above.status, Status::Warn); // one over → Warn
+}

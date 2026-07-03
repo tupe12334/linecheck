@@ -95,7 +95,7 @@ Preset flags are overridden by any `linecheck.yml` in scope.
 
 ## Configuration
 
-`linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn at 200 lines, error at 400 lines** for all files.
+`linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn when a file exceeds 200 lines, error when it exceeds 400 lines**.
 
 ```
 project/
