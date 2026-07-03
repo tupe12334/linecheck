@@ -19,6 +19,8 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
             {
                 files.push(entry.into_path());
             }
+        } else {
+            eprintln!("Warning: path not found: {}", path.display());
         }
     }
     files
