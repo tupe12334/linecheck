@@ -23,7 +23,7 @@ pub fn file_info(path: &Path) -> Result<(usize, bool)> {
 pub fn count_newlines(data: &[u8]) -> usize {
     if data.is_empty() { return 0; }
     let newlines = data.iter().filter(|&&b| b == b'\n').count();
-    if *data.last().unwrap() != b'\n' { newlines + 1 } else { newlines }
+    if data.last() != Some(&b'\n') { newlines + 1 } else { newlines }
 }
 
 #[cfg(test)]
