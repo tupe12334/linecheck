@@ -27,7 +27,7 @@ cargo build
 3. Run the full local check — all three must pass:
    ```bash
    cargo test
-   cargo clippy -- -D warnings
+   cargo clippy --all-targets -- -D warnings
    RUSTDOCFLAGS="-D missing_docs" cargo doc --no-deps
    ```
 4. Open a pull request; the CI workflow will verify your branch automatically.
