@@ -2,6 +2,7 @@
 use std::path::PathBuf;
 use anyhow::Result;
 
+use crate::escape::json_str;
 use linecheck::checker::{check_file, CheckOptions};
 use linecheck::result::{FileResult, Status};
 use linecheck::config::ConfigResolver;
@@ -77,12 +78,3 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
 
 fn digits(n: usize) -> usize { n.checked_ilog10().unwrap_or(0) as usize + 1 }
 
-fn json_str(s: &str) -> String {
-    let body: String = s.chars().map(|c| match c {
-        '\\' => "\\\\".to_owned(), '"' => "\\\"".to_owned(),
-        '\n' => "\\n".to_owned(),  '\r' => "\\r".to_owned(), '\t' => "\\t".to_owned(),
-        c if (c as u32) < 0x20 => format!("\\u{:04x}", c as u32),
-        c => c.to_string(),
-    }).collect();
-    format!("\"{body}\"")
-}

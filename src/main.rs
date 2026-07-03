@@ -1,4 +1,5 @@
 mod display;
+mod escape;
 
 use anyhow::Result;
 use clap::{ArgGroup, Parser};
