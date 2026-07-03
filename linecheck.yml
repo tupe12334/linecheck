@@ -1,10 +1,10 @@
 rules:
   - pattern: "tests/**/*.rs"
-    warn: 200
-    error: 300
+    warn: 50
+    error: 100
   - pattern: "**/*.rs"
     warn: 50
-    error: 90
+    error: 80
 
 exclude:
   - "target/**"
