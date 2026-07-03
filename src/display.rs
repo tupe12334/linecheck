@@ -45,7 +45,7 @@ pub fn print_status(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Che
         let tag = match row.status {
             Status::Error => "[ERROR]".to_string(),
             Status::Warn  => "[WARN]".to_string(),
-            Status::Ok    => format!("{}%", row.lines * 100 / row.limit),
+            Status::Ok    => format!("{}%", if row.limit > 0 { row.lines * 100 / row.limit } else { 0 }),
         };
         println!("{:<pw$}  {:>lw$} / {:<tw$}  {}", row.path, row.lines, row.limit, tag);
     }
@@ -61,7 +61,7 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
         let limit = r.error_limit.or(r.warn_limit);
         let Some(lim) = limit else { return };
         if r.status == Status::Error { *has_error = true; }
-        let pct = r.lines * 100 / lim;
+        let pct = if lim > 0 { r.lines * 100 / lim } else { 0 };
         let st = match r.status { Status::Error => "error", Status::Warn => "warn", Status::Ok => "ok" };
         items.push(format!(
             r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"}}"#,
