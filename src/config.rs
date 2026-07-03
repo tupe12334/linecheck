@@ -59,20 +59,16 @@ pub struct ConfigResolver {
 }
 
 impl ConfigResolver {
-    /// Create a resolver.
-    ///
-    /// Pass `Some(path)` to use one specific config file for every checked file.
-    /// Pass `None` to walk up from each file's directory to find the nearest
-    /// `config_name` file (hierarchical lookup, like `.gitignore` resolution).
+    /// Create a resolver. `Some(path)` pins one config file for all checked files;
+    /// `None` enables hierarchical lookup — walks up each file's directory tree
+    /// to find the nearest `config_name` file (like `.gitignore` resolution).
     pub fn new(explicit: Option<PathBuf>, config_name: &str) -> Self {
         Self { explicit, config_name: config_name.to_owned(), cache: HashMap::new() }
     }
 
-    /// Returns the config that applies to `file`, or `None` if none is found.
-    ///
-    /// If an explicit config path was given to [`ConfigResolver::new`], always
-    /// returns that config (cached after the first read). Otherwise walks up the
-    /// directory tree from `file` to find the nearest config file by name.
+    /// Returns the config for `file`, or `None` if no config file is found.
+    /// Uses the pinned path if one was given to [`ConfigResolver::new`];
+    /// otherwise walks up the directory tree to find the nearest config file.
     pub fn resolve(&mut self, file: &Path) -> Option<Config> {
         if let Some(ref p) = self.explicit.clone() {
             return self.load_cached(p.clone());
