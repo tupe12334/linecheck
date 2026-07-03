@@ -1,0 +1,13 @@
+{
+  "name": "linecheck",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "changeset": "changeset",
+    "version": "changeset version && node scripts/sync-version.mjs",
+    "release": "cargo publish --token $CARGO_REGISTRY_TOKEN"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0"
+  }
+}
