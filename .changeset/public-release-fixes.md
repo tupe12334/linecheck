@@ -4,18 +4,28 @@
 
 Fix several issues discovered during public release audit:
 
-- **Self-ignoring bug**: `src/lines.rs` contained the ignore marker as a raw
-  string literal, causing `linecheck` to silently skip its own core file when
-  checking the project. The marker constant now uses `\x3a` for `:` so the
-  source contains no raw occurrence of the sequence.
-- **Inaccurate `--status` output format in README**: example showed colons
-  after filenames (`src/main.rs:`) but actual output uses space-aligned columns.
-- **Wrong Presets table**: `--default` was listed as "200 lines" but is
-  200 warn / 400 error — two thresholds. Table now has separate Warn/Error columns.
-- **CHANGELOG used wrong ignore syntax**: `linecheck-ignore` → `linecheck:ignore`.
-- **Crates.io package contained JS tooling files**: `.changeset/`, `.claude/`,
-  `.githooks/`, `package.json`, `pnpm-lock.yaml`, `scripts/` are now excluded.
-- **Missing MSRV**: `rust-version = "1.85"` added (required by Rust 2024 edition).
-- **Clippy warnings**: `map_or(false, …)` replaced with `is_some_and(…)`.
+- **Self-ignoring bug**: `src/lines.rs` and `tests/integration.rs` contained
+  the ignore marker as raw string literals, causing `linecheck` to silently skip
+  its own core files. The marker now uses `\x3a` for `:` in all source files.
+- **Rule-matching docs corrected**: README claimed "most specific pattern wins"
+  but the code uses first-match semantics. Docs now accurately say "first
+  matching rule wins". A test locks in this behaviour.
+- **`display` module made private**: output-formatting functions (`print_violations`,
+  `print_status`, `print_json`) were exported from the library crate despite being
+  CLI implementation detail. Moved to the binary crate; public library surface is
+  now `checker`, `config`, `files`, `lines`, `preset`.
+- **`unwrap()` removed from library code**: `count_newlines` used `.unwrap()` on
+  `data.last()` guarded by an `is_empty()` check. Replaced with `data.last() != Some(&b'\n')`.
+- **Missing `--config` error**: passing a non-existent explicit `--config` path
+  silently fell back to defaults. Now exits 1 with a clear error message.
+- **Inaccurate README**: fixed `--status` output format (removed colons), Presets
+  table (separate Warn/Error columns), usage line (`[FILES...]` → `[PATHS]...`),
+  and documented both `--json` modes.
+- **Crates.io package cleanup**: `.changeset/`, `.claude/`, `.githooks/`,
+  `package.json`, `pnpm-lock.yaml`, `scripts/` excluded from published crate.
+- **Missing crates.io metadata**: added `readme`, `documentation`, `rust-version`,
+  `repository`, `homepage`, `keywords`, `categories`.
+- **CI improvements**: added `cargo doc` with `RUSTDOCFLAGS="-D missing_docs"` to
+  catch undocumented public API additions.
+- **CHANGELOG typo**: `linecheck-ignore` → `` `linecheck:ignore` ``.
 - **Self-compliance**: project now passes its own `linecheck .` check.
-- **CI**: added workflow to run tests and clippy on every push and pull request.
