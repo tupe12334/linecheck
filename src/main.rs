@@ -1,10 +1,12 @@
+mod display;
+
 use anyhow::Result;
 use clap::{ArgGroup, Parser};
 use std::path::PathBuf;
 
+use display::{print_json, print_status, print_violations};
 use linecheck::checker::CheckOptions;
 use linecheck::config::ConfigResolver;
-use linecheck::display::{print_json, print_status, print_violations};
 use linecheck::files::collect_files;
 use linecheck::preset::Preset;
 

@@ -2,8 +2,8 @@
 use std::path::PathBuf;
 use anyhow::Result;
 
-use crate::checker::{check_file, CheckOptions, FileResult, Status};
-use crate::config::ConfigResolver;
+use linecheck::checker::{check_file, CheckOptions, FileResult, Status};
+use linecheck::config::ConfigResolver;
 
 fn run<F>(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, mut each: F) -> Result<()>
 where F: FnMut(&PathBuf, FileResult)

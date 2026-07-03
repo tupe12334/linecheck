@@ -15,7 +15,6 @@
 
 pub mod checker;
 pub mod config;
-pub mod display;
 pub mod files;
 pub mod lines;
 pub mod preset;
