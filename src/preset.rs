@@ -31,12 +31,5 @@ impl Preset {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn preset_limits() {
-        assert_eq!(Preset::Strict.limits(), (Some(100), Some(100)));
-        assert_eq!(Preset::Free.limits(), (None, None));
-        assert_eq!(Preset::Default.limits(), (Some(DEFAULT_WARN), Some(DEFAULT_ERROR)));
-    }
-}
+#[path = "preset_tests.rs"]
+mod tests;

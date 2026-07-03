@@ -26,6 +26,10 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
     files
 }
 
+#[cfg(test)]
+#[path = "files_tests.rs"]
+mod tests;
+
 fn is_hidden(path: &Path) -> bool {
     path.file_name()
         .and_then(|n| n.to_str())
