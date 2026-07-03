@@ -57,9 +57,10 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
         if r.status == Status::Error { *has_error = true; }
         let pct = if lim > 0 { r.lines * 100 / lim } else { 0 };
         let st = match r.status { Status::Error => "error", Status::Warn => "warn", Status::Ok => "ok" };
-        let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, serde_json::to_string(m).unwrap()));
+        let json = |s: &str| serde_json::to_string(s).unwrap_or_else(|_| "null".into());
+        let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, json(m)));
         items.push(format!(r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"{msg}}}"#,
-            f = serde_json::to_string(&file.display().to_string()).unwrap(), l = r.lines));
+            f = json(&file.display().to_string()), l = r.lines));
     })?;
     println!("{}", if items.is_empty() { "[]".into() } else { format!("[\n{}\n]", items.join(",\n")) });
     Ok(())
