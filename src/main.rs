@@ -35,7 +35,14 @@ struct Args {
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let explicit_config = if args.config.exists() || args.config.to_str() != Some("linecheck.yml") {
+    let is_default_config_name = args.config.to_str() == Some("linecheck.yml");
+    let explicit_config = if !is_default_config_name {
+        if !args.config.exists() {
+            eprintln!("Error: config file '{}' not found", args.config.display());
+            std::process::exit(1);
+        }
+        Some(args.config.clone())
+    } else if args.config.exists() {
         Some(args.config.clone())
     } else {
         None

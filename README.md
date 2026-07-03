@@ -57,16 +57,20 @@ src/lib.rs    180 / 200  90%
 src/config.rs  45 / 200  22%
 ```
 
-For scripting and CI dashboards, use `--json`:
+For scripting and CI dashboards, use `--json`. Without `--status` it outputs only violations:
 ```bash
-linecheck --status --json src/
+linecheck --json src/
 ```
 ```json
 [
   {"file":"src/main.rs","lines":450,"limit":400,"percent":112,"status":"error"},
-  {"file":"src/utils.rs","lines":220,"limit":200,"percent":110,"status":"warn"},
-  {"file":"src/lib.rs","lines":180,"limit":200,"percent":90,"status":"ok"}
+  {"file":"src/utils.rs","lines":220,"limit":200,"percent":110,"status":"warn"}
 ]
+```
+
+Add `--status` to include all files regardless of their status:
+```bash
+linecheck --status --json src/
 ```
 
 Each object contains: `file` (path), `lines` (count), `limit` (threshold used), `percent` (lines × 100 / limit), `status` (`"ok"`, `"warn"`, or `"error"`).
