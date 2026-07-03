@@ -1,10 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
+
 rules:
   - pattern: "tests/**/*.rs"
     warn: 50
     error: 100
   - pattern: "**/*.rs"
     warn: 50
-    error: 80
+    error: 70
 
 exclude:
   - "target/**"

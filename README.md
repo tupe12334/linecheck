@@ -101,6 +101,26 @@ Files are flagged when their line count **exceeds** the threshold — a file wit
 
 Preset flags are overridden by any `linecheck.yml` in scope.
 
+## Schema
+
+A JSON Schema for `linecheck.yml` is published alongside the codebase at [`schema/linecheck.schema.json`](schema/linecheck.schema.json).
+
+**VS Code / any YAML Language Server editor** — add a modeline at the top of your `linecheck.yml` for inline validation and autocompletion with no plugin configuration required:
+
+```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
+```
+
+Alternatively, configure it project-wide via `.vscode/settings.json`:
+
+```json
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json": "linecheck.yml"
+  }
+}
+```
+
 ## Configuration
 
 `linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn when a file exceeds 200 lines, error when it exceeds 400 lines**.
@@ -119,6 +139,8 @@ project/
 Create a `linecheck.yml` at the root of your project to override the defaults:
 
 ```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
+
 rules:
   - pattern: "**/*.rs"
     warn: 200
