@@ -76,7 +76,16 @@ linecheck --status --json src/
 
 ## Configuration
 
-`linecheck` walks up from the current directory to the repo root (`.git`) to find a `linecheck.yml`. If none is found, it falls back to built-in defaults: **warn at 200 lines, error at 400 lines** for all files.
+`linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn at 200 lines, error at 400 lines** for all files.
+
+```
+project/
+├── linecheck.yml        ← applies to everything
+└── src/
+    ├── linecheck.yml    ← overrides for src/ and below
+    └── generated/
+        └── linecheck.yml  ← can relax limits for generated code
+```
 
 > **Not sure where to start?** 200 lines is a reasonable warn threshold for most source files — it's enough for a focused module but flags anything that's grown too broad.
 
