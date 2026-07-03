@@ -37,7 +37,9 @@ struct Args {
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let is_default_config_name = args.config.to_str() == Some("linecheck.yml");
+    // Treat both "linecheck.yml" and "./linecheck.yml" as the default name.
+    let stripped = args.config.strip_prefix(".").unwrap_or(&args.config);
+    let is_default_config_name = stripped == std::path::Path::new("linecheck.yml");
     let explicit_config = if !is_default_config_name {
         if !args.config.exists() {
             eprintln!("Error: config file '{}' not found", args.config.display());
