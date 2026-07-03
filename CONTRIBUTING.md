@@ -24,7 +24,12 @@ cargo build
 
 1. Fork the repo and create a branch.
 2. Make your change and add or update tests as needed.
-3. Run `cargo test` and `cargo clippy -- -D warnings` — both must pass.
+3. Run the full local check — all three must pass:
+   ```bash
+   cargo test
+   cargo clippy -- -D warnings
+   RUSTDOCFLAGS="-D missing_docs" cargo doc --no-deps
+   ```
 4. Open a pull request; the CI workflow will verify your branch automatically.
 
 ## Releasing (maintainers only)
