@@ -58,6 +58,17 @@ src/main.rs: 450 lines (error threshold: 400)
 src/utils.rs: 220 lines (warn threshold: 200)
 ```
 
+See which files are creeping toward their limit before they breach it:
+```bash
+linecheck --status src/
+```
+```
+src/main.rs:   450 / 400  [ERROR]
+src/utils.rs:  220 / 200  [WARN]
+src/lib.rs:    180 / 200  90%
+src/config.rs:  45 / 200  22%
+```
+
 ## Configuration
 
 Create a `linecheck.yml` at the root of your project:
@@ -75,6 +86,8 @@ exclude:
   - "**/generated/**"
   - "**/vendor/**"
 ```
+
+When multiple rules match the same file, the most specific pattern wins.
 
 CLI flags override config file values. Run `linecheck --help` for all options.
 
