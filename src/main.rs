@@ -9,12 +9,7 @@ use linecheck::{checker::CheckOptions, config::ConfigResolver, files::collect_fi
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    let default_cfg = args.config.strip_prefix(".").unwrap_or(&args.config) == std::path::Path::new("linecheck.yml");
-    let explicit_config = if !default_cfg {
-        if !args.config.exists() { eprintln!("Error: config file '{}' not found", args.config.display()); std::process::exit(1); }
-        Some(args.config.clone())
-    } else { args.config.exists().then(|| args.config.clone()) };
-    let mut resolver = ConfigResolver::new(explicit_config, "linecheck.yml");
+    let mut resolver = ConfigResolver::new(args.config_path(), "linecheck.yml");
     let preset = args.strict.then_some(Preset::Strict).or(args.default_preset.then_some(Preset::Default))
         .or(args.loose.then_some(Preset::Loose)).or(args.free.then_some(Preset::Free));
     let (fallback_warn, fallback_error) = preset.map(|p: Preset| p.limits())
