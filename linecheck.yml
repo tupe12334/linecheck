@@ -4,7 +4,7 @@ rules:
     error: 300
   - pattern: "**/*.rs"
     warn: 100
-    error: 150
+    error: 100
 
 exclude:
   - "target/**"
