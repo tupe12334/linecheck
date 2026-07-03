@@ -124,8 +124,8 @@ fn first_matching_rule_wins() {
     // Specific rule first (warn=2) — should win now
     let specific_first = Config {
         rules: vec![
-            Rule { pattern: "file.txt".into(), warn: Some(2),  error: Some(5)  },
-            Rule { pattern: "**/*.txt".into(), warn: Some(10), error: Some(20), message: None },
+            Rule { pattern: "file.txt".into(), warn: Some(2),  warn_message: None, error: Some(5),  error_message: None },
+            Rule { pattern: "**/*.txt".into(), warn: Some(10), warn_message: None, error: Some(20), error_message: None },
         ],
         exclude: vec![],
     };
