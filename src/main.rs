@@ -18,29 +18,26 @@ struct Args {
     paths: Vec<PathBuf>,
     #[arg(long)]
     max_lines: Option<usize>,
-    #[arg(long, default_value = ".linecheckrc")]
+    #[arg(long, default_value = "linecheck.yml")]
     config: PathBuf,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
     let config = load_config(&args.config);
-    let files = collect_files(&args.paths);
-    let mut worst = Status::Ok;
+    let files = collect_files(&args.paths, &config.exclude);
+    let mut has_error = false;
     for file in &files {
         match check_file(file, &config, args.max_lines) {
-            Ok((status, lines)) if status >= Status::Warn => {
-                let label = if status == Status::Error { "ERROR" } else { "WARN" };
-                println!("{} {} ({} lines)", label, file.display(), lines);
-                if status > worst { worst = status; }
+            Ok((status, lines, threshold)) if status >= Status::Warn => {
+                let kind = if status == Status::Error { "error" } else { "warn" };
+                let limit = threshold.map_or(String::new(), |t| format!(" ({kind} threshold: {t})"));
+                println!("{}: {lines} lines{limit}", file.display());
+                if status == Status::Error { has_error = true; }
             }
             Err(e) => eprintln!("Error: {}", e),
             _ => {}
         }
     }
-    std::process::exit(match worst {
-        Status::Ok => 0,
-        Status::Warn => 1,
-        Status::Error => 2,
-    });
+    std::process::exit(if has_error { 1 } else { 0 });
 }

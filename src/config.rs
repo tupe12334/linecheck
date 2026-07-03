@@ -6,6 +6,8 @@ use std::path::Path;
 pub struct Config {
     #[serde(default)]
     pub rules: Vec<Rule>,
+    #[serde(default)]
+    pub exclude: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]

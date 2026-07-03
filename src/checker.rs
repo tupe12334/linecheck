@@ -3,22 +3,23 @@ use glob::Pattern;
 use std::path::Path;
 
 use crate::config::Config;
-use crate::lines::count_lines;
+use crate::lines::file_info;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-pub enum Status {
-    Ok,
-    Warn,
-    Error,
-}
+pub enum Status { Ok, Warn, Error }
 
-pub fn check_file(path: &Path, config: &Config, max_lines_override: Option<usize>) -> Result<(Status, usize)> {
-    let lines = count_lines(path)?;
+pub fn check_file(path: &Path, config: &Config, max_lines_override: Option<usize>) -> Result<(Status, usize, Option<usize>)> {
+    let (lines, ignored) = file_info(path)?;
+    if ignored { return Ok((Status::Ok, lines, None)); }
     let (warn_limit, error_limit) = resolve_limits(path, config, max_lines_override);
-    let status = if error_limit.map_or(false, |l| lines > l) { Status::Error }
-        else if warn_limit.map_or(false, |l| lines > l) { Status::Warn }
-        else { Status::Ok };
-    Ok((status, lines))
+    let (status, threshold) = if error_limit.map_or(false, |l| lines > l) {
+        (Status::Error, error_limit)
+    } else if warn_limit.map_or(false, |l| lines > l) {
+        (Status::Warn, warn_limit)
+    } else {
+        (Status::Ok, None)
+    };
+    Ok((status, lines, threshold))
 }
 
 fn resolve_limits(path: &Path, config: &Config, override_: Option<usize>) -> (Option<usize>, Option<usize>) {
