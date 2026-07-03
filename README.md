@@ -116,10 +116,14 @@ Create a `linecheck.yml` at the root of your project to override the defaults:
 rules:
   - pattern: "**/*.rs"
     warn: 200
+    warn_message: "Getting long — consider splitting into submodules"
     error: 400
+    error_message: "Too large to review easily; split this file now"
   - pattern: "**/*.ts"
     warn: 150
+    warn_message: "Consider breaking this into smaller components"
     error: 300
+    error_message: "File exceeds the hard limit — split before merging"
 
 exclude:
   - "**/generated/**"
@@ -127,6 +131,8 @@ exclude:
 ```
 
 Rules are evaluated in order — the **first matching rule wins**. Put more specific patterns before broader ones.
+
+The optional `warn_message` and `error_message` fields set hints printed alongside violations at each severity level. Both are independent — you can set one, the other, or both. Use them to explain the intent of the limit or point to a team convention.
 
 CLI flags override config file values. Run `linecheck --help` for all options.
 
