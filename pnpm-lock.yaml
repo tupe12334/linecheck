@@ -11,6 +11,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.27.0
         version: 2.31.0
+      block-no-verify:
+        specifier: ^1.3.0
+        version: 1.3.0
 
 packages:
 
@@ -100,6 +103,10 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@polyhook/sdk@0.1.11':
+    resolution: {integrity: sha512-Tb8NJ6oYxEwWAlsC0R/PFDIxMjYyXsZQOwSjoMD0eEPppyf1BtNfcZO1oSXxM2eQsEynlpOXr6cDku9B7KUSSQ==}
+    engines: {node: '>=18'}
+
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
@@ -124,6 +131,11 @@ packages:
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
+
+  block-no-verify@1.3.0:
+    resolution: {integrity: sha512-pUEt/KwRe2Uu5abvSZwaA8J6FCcNqjy+IebPW6DAgag81NmqUnCxd63ueivAa8L3f1bYL0dMXJ9WgJ2uyg1ZvA==}
+    engines: {node: '>=20.0.0'}
+    hasBin: true
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -565,6 +577,8 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
+  '@polyhook/sdk@0.1.11': {}
+
   '@types/node@12.20.55': {}
 
   ansi-colors@4.1.3: {}
@@ -582,6 +596,10 @@ snapshots:
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
+
+  block-no-verify@1.3.0:
+    dependencies:
+      '@polyhook/sdk': 0.1.11
 
   braces@3.0.3:
     dependencies:
