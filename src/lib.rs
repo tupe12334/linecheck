@@ -1,3 +1,4 @@
+#![deny(missing_docs)]
 //! `linecheck` — enforce per-file line limits across your codebase.
 //!
 //! This crate is both a CLI tool (`linecheck`) and a Rust library. The library
