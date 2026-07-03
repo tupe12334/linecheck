@@ -31,7 +31,8 @@ fn collect_files_skips_hidden_entries() {
     let files = collect_files(&[dir.path().to_path_buf()], &[]);
     assert!(files.iter().any(|f| f.ends_with("visible.txt")));
     assert!(files.iter().all(|f| {
-        !f.file_name().and_then(|n| n.to_str()).is_some_and(|s| s.starts_with('.'))
+        !f.file_name()
+            .and_then(|n| n.to_str())
+            .is_some_and(|s| s.starts_with('.'))
     }));
 }
-

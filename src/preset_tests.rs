@@ -7,7 +7,10 @@ fn preset_strict_limits() {
 
 #[test]
 fn preset_default_limits() {
-    assert_eq!(Preset::Default.limits(), (Some(DEFAULT_WARN), Some(DEFAULT_ERROR)));
+    assert_eq!(
+        Preset::Default.limits(),
+        (Some(DEFAULT_WARN), Some(DEFAULT_ERROR))
+    );
 }
 
 #[test]
