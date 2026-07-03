@@ -42,6 +42,12 @@ linecheck --max-lines 200 src/
 
 Example output:
 ```
+src/main.rs: 450 lines (error threshold: 400)
+src/utils.rs: 220 lines (warn threshold: 200)
+```
+
+When `warn_message` / `error_message` are set in the matching rule, the message is appended:
+```
 src/main.rs: 450 lines (error threshold: 400) — Too large to review easily; split this file now
 src/utils.rs: 220 lines (warn threshold: 200) — Getting long — consider splitting into submodules
 ```
