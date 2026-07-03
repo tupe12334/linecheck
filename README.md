@@ -136,6 +136,8 @@ CLI flags override config file values. Run `linecheck --help` for all options.
 
 The file will be skipped regardless of its line count. There is no partial ignore — it's all-or-nothing.
 
+> **Note:** detection is a raw byte scan, so any file that contains the literal string `linecheck:ignore` anywhere (including in string literals or documentation) will be treated as ignored. If your source code references the marker as a string constant, write the colon as `\x3a` in the Rust/C literal so the raw sequence does not appear in the file.
+
 ## Exit codes
 
 | Code | Meaning |
