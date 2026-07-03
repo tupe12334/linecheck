@@ -14,7 +14,7 @@ Thanks for your interest in contributing!
 cargo test
 
 # Check for lint issues
-cargo clippy -- -D warnings
+cargo clippy --all-targets -- -D warnings
 
 # Build the CLI
 cargo build
