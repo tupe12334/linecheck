@@ -27,7 +27,7 @@ fn main() -> Result<()> {
         fallback_warn,
         fallback_error,
     };
-    let root_cfg = resolver.resolve(std::env::current_dir().unwrap_or_default().as_path());
+    let root_cfg = resolver.resolve(&std::env::current_dir().unwrap_or_default().join("__"));
     let files = collect_files(
         &args.paths,
         &root_cfg
