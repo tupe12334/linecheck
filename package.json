@@ -1,6 +1,6 @@
 {
   "name": "linecheck",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || true",
