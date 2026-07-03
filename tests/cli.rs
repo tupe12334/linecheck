@@ -38,6 +38,20 @@ fn default_config_missing_does_not_error() {
 }
 
 #[test]
+fn dotslash_default_config_is_not_explicit() {
+    // "--config ./linecheck.yml" should behave like the default (no error when absent),
+    // not like an explicit path (which errors when absent).
+    let tmp = tempfile::TempDir::new().unwrap();
+    std::fs::write(tmp.path().join("a.rs"), "fn main() {}\n").unwrap();
+    let out = bin()
+        .args(["--config", "./linecheck.yml"])
+        .arg(tmp.path())
+        .output()
+        .unwrap();
+    assert!(out.status.success(), "stderr: {}", String::from_utf8_lossy(&out.stderr));
+}
+
+#[test]
 fn exits_one_on_error_threshold_breach() {
     let tmp = tempfile::TempDir::new().unwrap();
     let content = (0..10).map(|i| format!("line{i}\n")).collect::<String>();
