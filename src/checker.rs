@@ -1,96 +1,48 @@
 //! Core file-checking logic: resolves limits and returns a [`FileResult`].
+use anyhow::Result;
+use glob::Pattern;
+use std::path::Path;
 use crate::config::Config;
 use crate::lines::file_info;
 use crate::preset::{DEFAULT_ERROR, DEFAULT_WARN};
 use crate::result::{FileResult, Status};
-use anyhow::Result;
-use glob::Pattern;
-use std::path::Path;
+
 /// Options controlling how a single file is checked.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CheckOptions {
-    /// When set, overrides every rule and preset — every file uses this as both its warn and error threshold.
+    /// When set, overrides every rule and preset.
     pub max_lines: Option<usize>,
-    /// Warn threshold used when no config rule matches the file. `None` means no warn limit.
+    /// Warn threshold when no rule matches. `None` means no warn limit.
     pub fallback_warn: Option<usize>,
-    /// Error threshold used when no config rule matches the file. `None` means no error limit.
+    /// Error threshold when no rule matches. `None` means no error limit.
     pub fallback_error: Option<usize>,
 }
 impl Default for CheckOptions {
-    fn default() -> Self {
-        Self {
-            max_lines: None,
-            fallback_warn: Some(DEFAULT_WARN),
-            fallback_error: Some(DEFAULT_ERROR),
-        }
-    }
+    fn default() -> Self { Self { max_lines: None, fallback_warn: Some(DEFAULT_WARN), fallback_error: Some(DEFAULT_ERROR) } }
 }
-/// Check a single file; pass `None` for `config` to fall back to the thresholds in `opts`.
+/// Check a single file and return its [`FileResult`].
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
     let (lines, ignored) = file_info(path)?;
-    if ignored {
-        return Ok(FileResult {
-            status: Status::Ok,
-            lines,
-            warn_limit: None,
-            error_limit: None,
-            message: None,
-        });
-    }
-    let (warn_limit, error_limit, warn_message, error_message) = resolve_limits(path, config, opts);
-    let status = if error_limit.is_some_and(|l| lines > l) {
-        Status::Error
-    } else if warn_limit.is_some_and(|l| lines > l) {
-        Status::Warn
-    } else {
-        Status::Ok
-    };
-    let message = match status {
-        Status::Error => error_message,
-        Status::Warn => warn_message,
-        Status::Ok => None,
-    };
-    Ok(FileResult {
-        status,
-        lines,
-        warn_limit,
-        error_limit,
-        message,
-    })
+    if ignored { return Ok(FileResult { status: Status::Ok, lines, warn_limit: None, error_limit: None, message: None }); }
+    let (warn_limit, error_limit, warn_msg, err_msg) = resolve_limits(path, config, opts);
+    let status = if error_limit.is_some_and(|l| lines > l) { Status::Error } else if warn_limit.is_some_and(|l| lines > l) { Status::Warn } else { Status::Ok };
+    let message = match status { Status::Error => err_msg, Status::Warn => warn_msg, Status::Ok => None };
+    Ok(FileResult { status, lines, warn_limit, error_limit, message })
 }
-
-fn resolve_limits(
-    path: &Path,
-    config: Option<&Config>,
-    opts: &CheckOptions,
-) -> (Option<usize>, Option<usize>, Option<String>, Option<String>) {
-    if let Some(max) = opts.max_lines {
-        return (Some(max), Some(max), None, None);
-    }
+fn resolve_limits(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> (Option<usize>, Option<usize>, Option<String>, Option<String>) {
+    if let Some(max) = opts.max_lines { return (Some(max), Some(max), None, None); }
     if let Some(cfg) = config {
         let s = path.to_string_lossy();
-        let path_str = s.strip_prefix("./").unwrap_or(&s);
+        let ps = s.strip_prefix("./").unwrap_or(&s);
         for rule in &cfg.rules {
-            let Ok(pat) = Pattern::new(&rule.pattern) else {
-                continue;
-            };
-            let fname = path
-                .file_name()
-                .and_then(|f| f.to_str())
-                .is_some_and(|f| pat.matches(f));
-            if pat.matches(path_str) || fname {
-                return (
-                    rule.warn,
-                    rule.error,
-                    rule.warn_message.clone(),
-                    rule.error_message.clone(),
-                );
+            let Ok(pat) = Pattern::new(&rule.pattern) else { continue };
+            if pat.matches(ps) || path.file_name().and_then(|f| f.to_str()).is_some_and(|f| pat.matches(f)) {
+                return (rule.warn, rule.error, rule.warn_message.clone(), rule.error_message.clone());
             }
         }
     }
     (opts.fallback_warn, opts.fallback_error, None, None)
 }
-
 #[cfg(test)]
 #[path = "checker_tests.rs"]
 mod tests;
