@@ -124,7 +124,7 @@ exclude:
   - "**/vendor/**"
 ```
 
-When multiple rules match the same file, the most specific pattern wins.
+Rules are evaluated in order — the **first matching rule wins**. Put more specific patterns before broader ones.
 
 CLI flags override config file values. Run `linecheck --help` for all options.
 
