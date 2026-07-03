@@ -18,11 +18,7 @@ pub(super) fn print_table(rows: &[Row]) {
         rows.iter().map(|r| digits(r.limit)).max().unwrap_or(0),
     );
     for row in rows {
-        let pct = if row.limit > 0 {
-            row.lines * 100 / row.limit
-        } else {
-            0
-        };
+        let pct = (row.lines * 100).checked_div(row.limit).unwrap_or(0);
         let tag = match row.status {
             Status::Error => "[ERROR]".to_owned(),
             Status::Warn => "[WARN]".to_owned(),

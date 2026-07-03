@@ -26,7 +26,7 @@ pub fn print_json(
         if r.status == Status::Error {
             *has_error = true;
         }
-        let pct = if lim > 0 { r.lines * 100 / lim } else { 0 };
+        let pct = (r.lines * 100).checked_div(lim).unwrap_or(0);
         let st = match r.status {
             Status::Error => "error",
             Status::Warn => "warn",
