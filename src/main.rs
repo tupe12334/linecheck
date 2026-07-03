@@ -1,5 +1,6 @@
 mod checker;
 mod config;
+mod display;
 mod files;
 mod lines;
 
@@ -7,8 +8,8 @@ use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 
-use checker::{Status, check_file};
 use config::load_config;
+use display::{print_status, print_violations};
 use files::collect_files;
 
 #[derive(Parser, Debug)]
@@ -20,6 +21,8 @@ struct Args {
     max_lines: Option<usize>,
     #[arg(long, default_value = "linecheck.yml")]
     config: PathBuf,
+    #[arg(long, help = "Show line count status for all files, including those within limits")]
+    status: bool,
 }
 
 fn main() -> Result<()> {
@@ -27,17 +30,10 @@ fn main() -> Result<()> {
     let config = load_config(&args.config);
     let files = collect_files(&args.paths, &config.exclude);
     let mut has_error = false;
-    for file in &files {
-        match check_file(file, &config, args.max_lines) {
-            Ok((status, lines, threshold)) if status >= Status::Warn => {
-                let kind = if status == Status::Error { "error" } else { "warn" };
-                let limit = threshold.map_or(String::new(), |t| format!(" ({kind} threshold: {t})"));
-                println!("{}: {lines} lines{limit}", file.display());
-                if status == Status::Error { has_error = true; }
-            }
-            Err(e) => eprintln!("Error: {}", e),
-            _ => {}
-        }
+    if args.status {
+        print_status(&files, &config, args.max_lines, &mut has_error)?;
+    } else {
+        print_violations(&files, &config, args.max_lines, &mut has_error)?;
     }
     std::process::exit(if has_error { 1 } else { 0 });
 }
