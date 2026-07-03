@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/tupe12334/linecheck/schema/linecheck.schema.json",
+  "title": "linecheck configuration",
+  "description": "Configuration file for linecheck (linecheck.yml).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "rules": {
+      "description": "Ordered list of glob rules. The first matching rule wins.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Rule"
+      },
+      "default": []
+    },
+    "exclude": {
+      "description": "Glob patterns for files and directories to skip entirely.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "A glob pattern (e.g. 'target/**', 'Cargo.lock')."
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "Rule": {
+      "type": "object",
+      "description": "A single pattern/limit pair.",
+      "required": ["pattern"],
+      "additionalProperties": false,
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "Glob pattern matched against file paths (e.g. '**/*.rs')."
+        },
+        "warn": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Line count at which a warning is emitted."
+        },
+        "warn_message": {
+          "type": "string",
+          "description": "Message printed alongside a warn violation."
+        },
+        "error": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Line count at which an error is emitted."
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Message printed alongside an error violation."
+        }
+      }
+    }
+  }
+}
