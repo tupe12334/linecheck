@@ -42,6 +42,6 @@ impl Args {
             }
             return Some(c.clone());
         }
-        c.exists().then(|| c.clone())
+        None
     }
 }
