@@ -9,6 +9,15 @@ repository = "https://github.com/tupe12334/linecheck"
 homepage = "https://github.com/tupe12334/linecheck"
 keywords = ["lint", "lines", "cli", "check", "ai"]
 categories = ["command-line-utilities", "development-tools"]
+exclude = [
+    ".changeset/**",
+    ".claude/**",
+    ".githooks/**",
+    "package.json",
+    "pnpm-lock.yaml",
+    "scripts/**",
+    "node_modules/**",
+]
 
 [lib]
 name = "linecheck"
