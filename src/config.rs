@@ -1,4 +1,4 @@
-//! YAML configuration loading and hierarchical resolution.
+//! YAML configuration loading and hierarchical config resolution.
 use crate::rule::Rule;
 use glob::Pattern;
 use serde::Deserialize;
@@ -19,21 +19,15 @@ pub struct Config {
 
 /// Load a `linecheck.yml` from `path`. Returns [`Config::default`] on any error.
 pub fn load_config(path: &Path) -> Config {
-    let Ok(content) = fs::read_to_string(path) else { return Config::default(); };
-    let cfg: Config = serde_yaml::from_str(&content).unwrap_or_else(|e| {
-        eprintln!("Warning: failed to parse config {}: {}", path.display(), e);
-        Config::default()
-    });
+    let Ok(s) = fs::read_to_string(path) else { return Config::default(); };
+    let cfg: Config = serde_yaml::from_str(&s).unwrap_or_else(|e| { eprintln!("Warning: failed to parse config {}: {}", path.display(), e); Config::default() });
     warn_invalid_patterns(&cfg, path);
     cfg
 }
 
 fn warn_invalid_patterns(cfg: &Config, source: &Path) {
-    let check = |pat: &str, kind: &str| {
-        if Pattern::new(pat).is_err() { eprintln!("Warning: invalid {kind} pattern {pat:?} in {} — will be skipped", source.display()); }
-    };
-    for rule in &cfg.rules { check(&rule.pattern, "glob rule"); }
-    for pat in &cfg.exclude { check(pat, "exclude"); }
+    let pairs = cfg.rules.iter().map(|r| (r.pattern.as_str(), "glob rule")).chain(cfg.exclude.iter().map(|p| (p.as_str(), "exclude")));
+    for (pat, kind) in pairs { if Pattern::new(pat).is_err() { eprintln!("Warning: invalid {kind} pattern {pat:?} in {} — will be skipped", source.display()); } }
 }
 
 /// Resolves per-file configs by walking up the directory tree, caching results.
@@ -52,12 +46,8 @@ impl ConfigResolver {
     /// Returns the config for `file`, or `None` if no config file is found.
     pub fn resolve(&mut self, file: &Path) -> Option<Config> {
         if let Some(ref p) = self.explicit.clone() { return self.load_cached(p.clone()); }
-        let dir = file.parent()?;
-        for ancestor in dir.ancestors() {
-            let candidate = ancestor.join(&self.config_name);
-            if candidate.exists() { return self.load_cached(candidate); }
-        }
-        None
+        let found = file.parent()?.ancestors().map(|a| a.join(&self.config_name)).find(|c| c.exists())?;
+        self.load_cached(found)
     }
 
     fn load_cached(&mut self, path: PathBuf) -> Option<Config> {

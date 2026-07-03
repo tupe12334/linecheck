@@ -1,3 +1,4 @@
+#![deny(clippy::all)]
 #![deny(missing_docs)]
 //! `linecheck` — enforce per-file line limits across your codebase.
 //!
