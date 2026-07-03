@@ -52,6 +52,14 @@ fn dotslash_default_config_is_not_explicit() {
 }
 
 #[test]
+fn nonexistent_path_warns_on_stderr() {
+    let out = bin().arg("/tmp/linecheck-nonexistent-dir-xyz").output().unwrap();
+    assert!(out.status.success(), "should exit 0 (no files checked = no errors)");
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(stderr.contains("not found"), "expected 'not found' warning in: {stderr}");
+}
+
+#[test]
 fn exits_one_on_error_threshold_breach() {
     let tmp = tempfile::TempDir::new().unwrap();
     let content = (0..10).map(|i| format!("line{i}\n")).collect::<String>();
