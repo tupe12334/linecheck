@@ -11,8 +11,7 @@ fn print_violations_ok_file_is_silent() {
         &mut resolver(),
         &with_limits(10, 20),
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(!has_error);
 }
 #[test]
@@ -25,7 +24,6 @@ fn print_violations_error_sets_flag() {
         &mut resolver(),
         &with_limits(5, 10),
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(has_error);
 }

@@ -3,7 +3,6 @@ mod json_helpers;
 mod status;
 mod table;
 mod violations;
-use anyhow::Result;
 pub use json::print_json;
 use linecheck::{
     checker::{CheckOptions, check_file},
@@ -38,12 +37,11 @@ pub(crate) fn run<F: FnMut(&PathBuf, FileResult)>(
     resolver: &mut ConfigResolver,
     opts: &CheckOptions,
     mut each: F,
-) -> Result<()> {
+) {
     for f in files {
         match check_file(f, resolver.resolve(f).as_ref(), opts) {
             Ok(r) => each(f, r),
             Err(e) => eprintln!("Error: {e}"),
         }
     }
-    Ok(())
 }

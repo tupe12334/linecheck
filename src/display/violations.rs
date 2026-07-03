@@ -1,5 +1,4 @@
 use super::run;
-use anyhow::Result;
 use linecheck::{checker::CheckOptions, config::ConfigResolver, result::Status};
 use std::path::PathBuf;
 
@@ -9,7 +8,7 @@ pub fn print_violations(
     resolver: &mut ConfigResolver,
     opts: &CheckOptions,
     has_error: &mut bool,
-) -> Result<()> {
+) {
     run(files, resolver, opts, |file, r| {
         if r.status < Status::Warn {
             return;

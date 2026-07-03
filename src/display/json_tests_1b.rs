@@ -12,8 +12,7 @@ fn print_json_warn_violation() {
         &with_limits(5, 20),
         false,
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(!has_error);
 }
 #[test]
@@ -27,7 +26,6 @@ fn print_json_status_mode_includes_ok_files() {
         &with_limits(10, 20),
         true,
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(!has_error);
 }

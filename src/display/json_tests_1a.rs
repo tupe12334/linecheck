@@ -12,8 +12,7 @@ fn print_json_violations_empty_prints_brackets() {
         &with_limits(100, 200),
         false,
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(!has_error);
 }
 #[test]
@@ -27,7 +26,6 @@ fn print_json_error_violation() {
         &with_limits(5, 10),
         false,
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(has_error);
 }

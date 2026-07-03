@@ -1,6 +1,5 @@
 use super::run;
 use super::table::{Row, print_table};
-use anyhow::Result;
 use linecheck::{checker::CheckOptions, config::ConfigResolver, result::Status};
 use std::path::PathBuf;
 
@@ -10,7 +9,7 @@ pub fn print_status(
     resolver: &mut ConfigResolver,
     opts: &CheckOptions,
     has_error: &mut bool,
-) -> Result<()> {
+) {
     let mut rows: Vec<Row> = Vec::new();
     run(files, resolver, opts, |file, r| {
         let Some(limit) = (if r.status == Status::Warn {
@@ -29,7 +28,6 @@ pub fn print_status(
             limit,
             status: r.status,
         });
-    })?;
+    });
     print_table(&rows);
-    Ok(())
 }

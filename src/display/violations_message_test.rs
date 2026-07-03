@@ -14,6 +14,6 @@ fn print_violations_message_is_printed() {
     let path = make_file(&dir, "big.txt", 10);
     let mut has_error = false;
     let mut res = ConfigResolver::new(None, "linecheck.yml");
-    print_violations(&[path], &mut res, &unlimited(), &mut has_error).unwrap();
+    print_violations(&[path], &mut res, &unlimited(), &mut has_error);
     assert!(has_error);
 }

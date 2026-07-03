@@ -11,8 +11,7 @@ fn print_violations_warn_does_not_set_error_flag() {
         &mut resolver(),
         &with_limits(5, 20),
         &mut has_error,
-    )
-    .unwrap();
+    );
     assert!(!has_error);
 }
 #[test]
@@ -24,6 +23,5 @@ fn print_violations_unreadable_file_does_not_propagate_err() {
         &mut resolver(),
         &with_limits(10, 20),
         &mut has_error,
-    )
-    .unwrap();
+    );
 }

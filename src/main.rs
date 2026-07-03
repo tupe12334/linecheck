@@ -37,11 +37,11 @@ fn main() -> Result<()> {
     );
     let mut has_error = false;
     if args.json {
-        print_json(&files, &mut resolver, &opts, args.status, &mut has_error)?;
+        print_json(&files, &mut resolver, &opts, args.status, &mut has_error);
     } else if args.status {
-        print_status(&files, &mut resolver, &opts, &mut has_error)?;
+        print_status(&files, &mut resolver, &opts, &mut has_error);
     } else {
-        print_violations(&files, &mut resolver, &opts, &mut has_error)?;
+        print_violations(&files, &mut resolver, &opts, &mut has_error);
     }
     if has_error {
         std::process::exit(1);
