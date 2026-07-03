@@ -42,8 +42,8 @@ linecheck --max-lines 200 src/
 
 Example output:
 ```
-src/main.rs: 450 lines (error threshold: 400)
-src/utils.rs: 220 lines (warn threshold: 200)
+src/main.rs: 450 lines (error threshold: 400) — Too large to review easily; split this file now
+src/utils.rs: 220 lines (warn threshold: 200) — Getting long — consider splitting into submodules
 ```
 
 See which files are creeping toward their limit before they breach it:
