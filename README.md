@@ -27,7 +27,7 @@ cargo install linecheck
 ## Usage
 
 ```bash
-linecheck [OPTIONS] [FILES...]
+linecheck [OPTIONS] [PATHS]...
 ```
 
 Check all files in the current directory using your config:
