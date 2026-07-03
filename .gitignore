@@ -1,5 +1,6 @@
 
 *.local.*
+.env
 # Added by cargo
 
 /target
