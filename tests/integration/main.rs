@@ -1,6 +1,6 @@
-mod helpers;
-mod status;
-mod options;
 mod config;
-mod rules;
+mod helpers;
+mod options;
 mod resolver;
+mod rules;
+mod status;

@@ -11,11 +11,21 @@ pub fn write(dir: &Path, name: &str, content: &str) -> std::path::PathBuf {
 
 pub fn cfg(warn: usize, error: usize) -> Config {
     Config {
-        rules: vec![Rule { pattern: "**/*.txt".into(), warn: Some(warn), warn_message: None, error: Some(error), error_message: None }],
+        rules: vec![Rule {
+            pattern: "**/*.txt".into(),
+            warn: Some(warn),
+            warn_message: None,
+            error: Some(error),
+            error_message: None,
+        }],
         exclude: vec![],
     }
 }
 
 pub fn opts_unlimited() -> CheckOptions {
-    CheckOptions { max_lines: None, fallback_warn: None, fallback_error: None }
+    CheckOptions {
+        max_lines: None,
+        fallback_warn: None,
+        fallback_error: None,
+    }
 }

@@ -12,7 +12,9 @@ const IGNORE_MARKER: &[u8] = b"linecheck\x3aignore";
 /// `is_ignored` is `true` when the file contains the ignore marker anywhere.
 pub fn file_info(path: &Path) -> Result<(usize, bool)> {
     let data = fs::read(path).with_context(|| format!("reading {}", path.display()))?;
-    let ignored = data.windows(IGNORE_MARKER.len()).any(|w| w == IGNORE_MARKER);
+    let ignored = data
+        .windows(IGNORE_MARKER.len())
+        .any(|w| w == IGNORE_MARKER);
     Ok((count_newlines(&data), ignored))
 }
 
@@ -21,9 +23,15 @@ pub fn file_info(path: &Path) -> Result<(usize, bool)> {
 /// A file with no trailing newline has its last line counted anyway, so
 /// `"hello\nworld"` returns 2 just like `"hello\nworld\n"`.
 pub fn count_newlines(data: &[u8]) -> usize {
-    if data.is_empty() { return 0; }
+    if data.is_empty() {
+        return 0;
+    }
     let newlines = data.iter().filter(|&&b| b == b'\n').count();
-    if data.last() != Some(&b'\n') { newlines + 1 } else { newlines }
+    if data.last() != Some(&b'\n') {
+        newlines + 1
+    } else {
+        newlines
+    }
 }
 
 #[cfg(test)]
@@ -31,16 +39,24 @@ mod tests {
     use super::*;
 
     #[test]
-    fn empty() { assert_eq!(count_newlines(b""), 0); }
+    fn empty() {
+        assert_eq!(count_newlines(b""), 0);
+    }
 
     #[test]
-    fn no_trailing_newline() { assert_eq!(count_newlines(b"hello\nworld"), 2); }
+    fn no_trailing_newline() {
+        assert_eq!(count_newlines(b"hello\nworld"), 2);
+    }
 
     #[test]
-    fn trailing_newline() { assert_eq!(count_newlines(b"hello\nworld\n"), 2); }
+    fn trailing_newline() {
+        assert_eq!(count_newlines(b"hello\nworld\n"), 2);
+    }
 
     #[test]
-    fn single_line() { assert_eq!(count_newlines(b"hello"), 1); }
+    fn single_line() {
+        assert_eq!(count_newlines(b"hello"), 1);
+    }
 
     #[test]
     fn ignore_marker_detected() {

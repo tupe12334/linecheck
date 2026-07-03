@@ -22,10 +22,10 @@ impl Preset {
     /// Returns `(warn_limit, error_limit)`; `None` means unlimited.
     pub fn limits(self) -> (Option<usize>, Option<usize>) {
         match self {
-            Preset::Strict  => (Some(100), Some(100)),
+            Preset::Strict => (Some(100), Some(100)),
             Preset::Default => (Some(DEFAULT_WARN), Some(DEFAULT_ERROR)),
-            Preset::Loose   => (Some(400), Some(400)),
-            Preset::Free    => (None, None),
+            Preset::Loose => (Some(400), Some(400)),
+            Preset::Free => (None, None),
         }
     }
 }
@@ -37,6 +37,9 @@ mod tests {
     fn preset_limits() {
         assert_eq!(Preset::Strict.limits(), (Some(100), Some(100)));
         assert_eq!(Preset::Free.limits(), (None, None));
-        assert_eq!(Preset::Default.limits(), (Some(DEFAULT_WARN), Some(DEFAULT_ERROR)));
+        assert_eq!(
+            Preset::Default.limits(),
+            (Some(DEFAULT_WARN), Some(DEFAULT_ERROR))
+        );
     }
 }

@@ -1,6 +1,6 @@
 use tempfile::TempDir;
 
-use linecheck::{check_file, Status};
+use linecheck::{Status, check_file};
 
 use super::helpers::{cfg, opts_unlimited, write};
 
@@ -34,8 +34,8 @@ fn error_file() {
 #[test]
 fn ignored_file() {
     let dir = TempDir::new().unwrap();
-    let content = (0..20).map(|i| format!("line{i}\n")).collect::<String>()
-        + "# linecheck\x3aignore\n"; // \x3a = ':' — avoids this file self-ignoring
+    let content =
+        (0..20).map(|i| format!("line{i}\n")).collect::<String>() + "# linecheck\x3aignore\n"; // \x3a = ':' — avoids this file self-ignoring
     let path = write(dir.path(), "ignored.txt", &content);
     let r = check_file(&path, Some(&cfg(5, 10)), &opts_unlimited()).unwrap();
     assert_eq!(r.status, Status::Ok);

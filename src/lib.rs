@@ -22,8 +22,8 @@ pub mod preset;
 pub mod result;
 pub mod rule;
 
-pub use checker::{check_file, CheckOptions};
-pub use config::{load_config, Config, ConfigResolver};
+pub use checker::{CheckOptions, check_file};
+pub use config::{Config, ConfigResolver, load_config};
 pub use files::collect_files;
 pub use preset::Preset;
 pub use result::{FileResult, Status};

@@ -9,7 +9,10 @@ fn version_flag() {
     let out = bin().arg("--version").output().unwrap();
     assert!(out.status.success());
     let stdout = String::from_utf8_lossy(&out.stdout);
-    assert!(stdout.contains("linecheck"), "expected 'linecheck' in: {stdout}");
+    assert!(
+        stdout.contains("linecheck"),
+        "expected 'linecheck' in: {stdout}"
+    );
     assert!(stdout.contains("0.3"), "expected version in: {stdout}");
 }
 
@@ -21,7 +24,10 @@ fn missing_explicit_config_exits_nonzero() {
         .unwrap();
     assert!(!out.status.success(), "expected exit 1 for missing config");
     let stderr = String::from_utf8_lossy(&out.stderr);
-    assert!(stderr.contains("not found"), "expected 'not found' in stderr: {stderr}");
+    assert!(
+        stderr.contains("not found"),
+        "expected 'not found' in stderr: {stderr}"
+    );
 }
 
 #[test]
@@ -29,12 +35,13 @@ fn default_config_missing_does_not_error() {
     // When the default 'linecheck.yml' is absent, hierarchical lookup runs silently.
     let tmp = tempfile::TempDir::new().unwrap();
     std::fs::write(tmp.path().join("a.rs"), "fn main() {}\n").unwrap();
-    let out = bin()
-        .arg(tmp.path())
-        .output()
-        .unwrap();
+    let out = bin().arg(tmp.path()).output().unwrap();
     // No linecheck.yml in tmp → falls back to built-in defaults → file is fine
-    assert!(out.status.success(), "stderr: {}", String::from_utf8_lossy(&out.stderr));
+    assert!(
+        out.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
 }
 
 #[test]
@@ -48,15 +55,28 @@ fn dotslash_default_config_is_not_explicit() {
         .arg(tmp.path())
         .output()
         .unwrap();
-    assert!(out.status.success(), "stderr: {}", String::from_utf8_lossy(&out.stderr));
+    assert!(
+        out.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
 }
 
 #[test]
 fn nonexistent_path_warns_on_stderr() {
-    let out = bin().arg("/tmp/linecheck-nonexistent-dir-xyz").output().unwrap();
-    assert!(out.status.success(), "should exit 0 (no files checked = no errors)");
+    let out = bin()
+        .arg("/tmp/linecheck-nonexistent-dir-xyz")
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "should exit 0 (no files checked = no errors)"
+    );
     let stderr = String::from_utf8_lossy(&out.stderr);
-    assert!(stderr.contains("not found"), "expected 'not found' warning in: {stderr}");
+    assert!(
+        stderr.contains("not found"),
+        "expected 'not found' warning in: {stderr}"
+    );
 }
 
 #[test]
