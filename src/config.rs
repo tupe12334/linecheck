@@ -6,7 +6,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// A parsed `linecheck.yml` configuration file.
-#[derive(Debug, Deserialize, Default, Clone)]
+#[derive(Debug, Deserialize, Default, Clone, PartialEq)]
 pub struct Config {
     /// Ordered list of glob rules. The first matching rule wins.
     #[serde(default)]
@@ -17,7 +17,7 @@ pub struct Config {
 }
 
 /// A single pattern/limit pair inside a [`Config`].
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, PartialEq)]
 pub struct Rule {
     /// Glob pattern matched against file paths (e.g. `"**/*.rs"`).
     pub pattern: String,
@@ -41,15 +41,13 @@ pub fn load_config(path: &Path) -> Config {
 }
 
 fn warn_invalid_patterns(cfg: &Config, source: &Path) {
-    for rule in &cfg.rules {
-        if Pattern::new(&rule.pattern).is_err() {
-            eprintln!(
-                "Warning: invalid glob pattern {:?} in {} — rule will be skipped",
-                rule.pattern,
-                source.display()
-            );
+    let check = |pat: &str, kind: &str| {
+        if Pattern::new(pat).is_err() {
+            eprintln!("Warning: invalid {kind} pattern {pat:?} in {} — will be skipped", source.display());
         }
-    }
+    };
+    for rule in &cfg.rules { check(&rule.pattern, "glob rule"); }
+    for pat in &cfg.exclude { check(pat, "exclude"); }
 }
 
 /// Resolves per-file configs by walking up the directory tree,
