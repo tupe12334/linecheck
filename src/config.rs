@@ -1,8 +1,9 @@
 use serde::Deserialize;
+use std::collections::HashMap;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Clone)]
 pub struct Config {
     #[serde(default)]
     pub rules: Vec<Rule>,
@@ -10,7 +11,7 @@ pub struct Config {
     pub exclude: Vec<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Rule {
     pub pattern: String,
     pub warn: Option<usize>,
@@ -25,4 +26,44 @@ pub fn load_config(path: &Path) -> Config {
         eprintln!("Warning: failed to parse config {}: {}", path.display(), e);
         Config::default()
     })
+}
+
+/// Resolves per-file configs by walking up the directory tree,
+/// caching loaded configs to avoid redundant disk reads.
+pub struct ConfigResolver {
+    explicit: Option<PathBuf>,
+    config_name: String,
+    cache: HashMap<PathBuf, Option<Config>>,
+}
+
+impl ConfigResolver {
+    pub fn new(explicit: Option<PathBuf>, config_name: &str) -> Self {
+        Self { explicit, config_name: config_name.to_owned(), cache: HashMap::new() }
+    }
+
+    /// Returns the config that applies to `file`.
+    /// If an explicit config was provided on the CLI, always returns that.
+    /// Otherwise walks up the directory tree to find the nearest `linecheck.yml`.
+    pub fn resolve(&mut self, file: &Path) -> Option<Config> {
+        if let Some(ref p) = self.explicit.clone() {
+            return self.load_cached(p.clone());
+        }
+        let dir = file.parent()?;
+        for ancestor in dir.ancestors() {
+            let candidate = ancestor.join(&self.config_name);
+            if candidate.exists() {
+                return self.load_cached(candidate);
+            }
+        }
+        None
+    }
+
+    fn load_cached(&mut self, path: PathBuf) -> Option<Config> {
+        self.cache
+            .entry(path.clone())
+            .or_insert_with(|| {
+                fs::read_to_string(&path).ok().and_then(|s| serde_yaml::from_str(&s).ok())
+            })
+            .clone()
+    }
 }
