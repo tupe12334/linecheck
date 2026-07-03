@@ -24,7 +24,8 @@ pub fn print_violations(files: &[PathBuf], resolver: &mut ConfigResolver, opts: 
         if r.status < Status::Warn { return; }
         let (kind, lim) = if r.status == Status::Error { ("error", r.error_limit) } else { ("warn", r.warn_limit) };
         let tag = lim.map_or(String::new(), |t| format!(" ({kind} threshold: {t})"));
-        println!("{}: {} lines{tag}", file.display(), r.lines);
+        let hint = r.message.as_deref().map_or(String::new(), |m| format!(" — {m}"));
+        println!("{}: {} lines{tag}{hint}", file.display(), r.lines);
         if r.status == Status::Error { *has_error = true; }
     })
 }
@@ -63,8 +64,9 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
         if r.status == Status::Error { *has_error = true; }
         let pct = if lim > 0 { r.lines * 100 / lim } else { 0 };
         let st = match r.status { Status::Error => "error", Status::Warn => "warn", Status::Ok => "ok" };
+        let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, json_str(m)));
         items.push(format!(
-            r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"}}"#,
+            r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"{msg}}}"#,
             f = json_str(&file.display().to_string()), l = r.lines,
         ));
     })?;
@@ -76,10 +78,7 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
     Ok(())
 }
 
-fn digits(n: usize) -> usize {
-    if n == 0 { return 1; }
-    let mut d = 0; let mut x = n; while x > 0 { d += 1; x /= 10; } d
-}
+fn digits(n: usize) -> usize { n.checked_ilog10().unwrap_or(0) as usize + 1 }
 
 fn json_str(s: &str) -> String {
     let mut out = String::with_capacity(s.len() + 2);

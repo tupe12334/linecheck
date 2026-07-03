@@ -12,7 +12,7 @@ fn write(dir: &Path, name: &str, content: &str) -> std::path::PathBuf {
 
 fn cfg(warn: usize, error: usize) -> Config {
     Config {
-        rules: vec![Rule { pattern: "**/*.txt".into(), warn: Some(warn), error: Some(error) }],
+        rules: vec![Rule { pattern: "**/*.txt".into(), warn: Some(warn), warn_message: None, error: Some(error), error_message: None }],
         exclude: vec![],
     }
 }
@@ -112,8 +112,8 @@ fn first_matching_rule_wins() {
     // Broad rule first (warn=10) — should win over the specific rule below (warn=2)
     let broad_first = Config {
         rules: vec![
-            Rule { pattern: "**/*.txt".into(), warn: Some(10), error: Some(20) },
-            Rule { pattern: "file.txt".into(), warn: Some(2),  error: Some(5)  },
+            Rule { pattern: "**/*.txt".into(), warn: Some(10), warn_message: None, error: Some(20), error_message: None },
+            Rule { pattern: "file.txt".into(), warn: Some(2),  warn_message: None, error: Some(5),  error_message: None },
         ],
         exclude: vec![],
     };
@@ -125,7 +125,7 @@ fn first_matching_rule_wins() {
     let specific_first = Config {
         rules: vec![
             Rule { pattern: "file.txt".into(), warn: Some(2),  error: Some(5)  },
-            Rule { pattern: "**/*.txt".into(), warn: Some(10), error: Some(20) },
+            Rule { pattern: "**/*.txt".into(), warn: Some(10), error: Some(20), message: None },
         ],
         exclude: vec![],
     };

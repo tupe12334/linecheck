@@ -1,4 +1,5 @@
 //! YAML configuration loading and hierarchical resolution.
+use crate::rule::Rule;
 use glob::Pattern;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -14,17 +15,6 @@ pub struct Config {
     /// Glob patterns for files and directories to skip entirely.
     #[serde(default)]
     pub exclude: Vec<String>,
-}
-
-/// A single pattern/limit pair inside a [`Config`].
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct Rule {
-    /// Glob pattern matched against file paths (e.g. `"**/*.rs"`).
-    pub pattern: String,
-    /// Line count at which a warning is emitted. `None` means no warn limit.
-    pub warn: Option<usize>,
-    /// Line count at which an error is emitted. `None` means no error limit.
-    pub error: Option<usize>,
 }
 
 /// Load a `linecheck.yml` from `path`. Returns [`Config::default`] on any error.

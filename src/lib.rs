@@ -19,8 +19,10 @@ pub mod config;
 pub mod files;
 pub mod lines;
 pub mod preset;
+pub mod rule;
 
 pub use checker::{check_file, CheckOptions, FileResult, Status};
-pub use config::{load_config, Config, ConfigResolver, Rule};
+pub use config::{load_config, Config, ConfigResolver};
 pub use files::collect_files;
 pub use preset::Preset;
+pub use rule::Rule;
