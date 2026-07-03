@@ -14,6 +14,7 @@ categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".changeset/**",
     ".claude/**",
+    ".github/**",
     ".githooks/**",
     "package.json",
     "pnpm-lock.yaml",
