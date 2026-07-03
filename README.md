@@ -99,13 +99,13 @@ linecheck --loose .
 
 Files are flagged when their line count **exceeds** the threshold — a file with exactly N lines is fine; N+1 triggers the flag.
 
-Preset flags are overridden by any `linecheck.yml` in scope.
+Preset flags are overridden by any [`linecheck.yml`](linecheck.yml) in scope.
 
 ## Schema
 
-A JSON Schema for `linecheck.yml` is published alongside the codebase at [`schema/linecheck.schema.json`](schema/linecheck.schema.json).
+A JSON Schema for [`linecheck.yml`](linecheck.yml) is published alongside the codebase at [`schema/linecheck.schema.json`](schema/linecheck.schema.json).
 
-**VS Code / any YAML Language Server editor** — add a modeline at the top of your `linecheck.yml` for inline validation and autocompletion with no plugin configuration required:
+**VS Code / any YAML Language Server editor** — add a modeline at the top of your [`linecheck.yml`](linecheck.yml) for inline validation and autocompletion with no plugin configuration required:
 
 ```yaml
 # yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
@@ -123,7 +123,7 @@ Alternatively, configure it project-wide via `.vscode/settings.json`:
 
 ## Configuration
 
-`linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn when a file exceeds 200 lines, error when it exceeds 400 lines**.
+`linecheck` resolves configuration like `.gitignore` — a [`linecheck.yml`](linecheck.yml) applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn when a file exceeds 200 lines, error when it exceeds 400 lines**.
 
 
 ```
@@ -137,7 +137,7 @@ project/
 
 > **Not sure where to start?** 200 lines is a reasonable warn threshold for most source files — it's enough for a focused module but flags anything that's grown too broad.
 
-Create a `linecheck.yml` at the root of your project to override the defaults:
+Create a [`linecheck.yml`](linecheck.yml) at the root of your project to override the defaults:
 
 ```yaml
 # yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
@@ -167,7 +167,7 @@ CLI flags override config file values. Run `linecheck --help` for all options.
 
 ## Ignoring files
 
-**Exclude globs** — add an `exclude` list to `linecheck.yml` (see above).
+**Exclude globs** — add an `exclude` list to [`linecheck.yml`](linecheck.yml) (see above).
 
 **Inline ignore** — add this comment anywhere in the file to exempt it entirely:
 
