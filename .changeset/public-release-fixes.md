@@ -28,6 +28,9 @@ Fix numerous issues discovered during public release audit:
   now prints `Warning: path not found:` to stderr.
 - **Missing derives on public types**: `FileResult` and `CheckOptions` had no derives;
   added `Debug`/`Clone` to both, `Copy`/`PartialEq`/`Eq` to `FileResult`.
+  `Config` and `Rule` were also missing `PartialEq`; added to match the rest of the API.
+- **Invalid exclude patterns silently dropped**: `warn_invalid_patterns` only checked
+  rule globs, not the `exclude` list; extended to warn on both.
 - **Crates.io metadata**: added `readme`, `documentation`, `rust-version`, `repository`,
   `homepage`, `keywords`, `categories`.
 - **CI**: added `cargo doc` with `RUSTDOCFLAGS="-D missing_docs"` step.
