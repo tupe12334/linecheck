@@ -14,20 +14,20 @@ pub(super) fn resolve_limits(
     if let Some(cfg) = config {
         let s = path.to_string_lossy();
         let path_str = s.strip_prefix("./").unwrap_or(&s);
-        for rule in &cfg.rules {
-            let Ok(pat) = Pattern::new(&rule.pattern) else {
-                continue;
-            };
-            let fname = path
-                .file_name()
+        let fname_matches = |pat: &Pattern| {
+            path.file_name()
                 .and_then(|f| f.to_str())
-                .is_some_and(|f| pat.matches(f));
-            if pat.matches(path_str) || fname {
+                .is_some_and(|f| pat.matches(f))
+        };
+        for rule in cfg.rules.iter().filter_map(|r| {
+            Pattern::new(&r.pattern).ok().map(|p| (r, p))
+        }) {
+            if rule.1.matches(path_str) || fname_matches(&rule.1) {
                 return (
-                    rule.warn,
-                    rule.error,
-                    rule.warn_message.clone(),
-                    rule.error_message.clone(),
+                    rule.0.warn,
+                    rule.0.error,
+                    rule.0.warn_message.clone(),
+                    rule.0.error_message.clone(),
                 );
             }
         }

@@ -1,6 +1,13 @@
 use super::*;
 use std::fs;
+use std::path::Path;
 use tempfile::TempDir;
+
+#[test]
+fn resolver_returns_none_for_parentless_path() {
+    let mut resolver = ConfigResolver::new(None, "linecheck.yml");
+    assert!(resolver.resolve(Path::new("")).is_none());
+}
 
 #[test]
 fn resolver_returns_none_when_no_config_exists() {
