@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
+cargo fmt --all -- --check
 cargo clippy --all-targets -- -D warnings
 
 if command -v linecheck >/dev/null 2>&1; then

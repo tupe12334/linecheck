@@ -125,6 +125,7 @@ Alternatively, configure it project-wide via `.vscode/settings.json`:
 
 `linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn when a file exceeds 200 lines, error when it exceeds 400 lines**.
 
+
 ```
 project/
 ├── linecheck.yml        ← applies to everything
