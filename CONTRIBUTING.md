@@ -1,0 +1,44 @@
+# Contributing to linecheck
+
+Thanks for your interest in contributing!
+
+## Prerequisites
+
+- Rust 1.85+ (`rustup update stable`)
+- Node.js 20+ and pnpm 9 (only needed for changesets / releases)
+
+## Development workflow
+
+```bash
+# Run all tests
+cargo test
+
+# Check for lint issues
+cargo clippy -- -D warnings
+
+# Build the CLI
+cargo build
+```
+
+## Making changes
+
+1. Fork the repo and create a branch.
+2. Make your change and add or update tests as needed.
+3. Run `cargo test` and `cargo clippy -- -D warnings` — both must pass.
+4. Open a pull request; the CI workflow will verify your branch automatically.
+
+## Releasing (maintainers only)
+
+This project uses [changesets](https://github.com/changesets/changesets) for versioning.
+
+```bash
+# Describe your change
+pnpm changeset
+
+# Changesets Action on CI handles the actual publish to crates.io
+```
+
+## Code style
+
+- No comments that restate what the code does — only explain *why* when non-obvious.
+- Keep individual `.rs` files under the limits in `linecheck.yml` (the tool enforces itself).

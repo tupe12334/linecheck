@@ -1,13 +1,25 @@
+//! Built-in strictness presets.
+
 /// Built-in strictness presets applied when no config rule matches a file.
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Preset { Strict, Default, Loose, Free }
+pub enum Preset {
+    /// 100 lines — warn and error at the same threshold.
+    Strict,
+    /// 200 lines warn / 400 lines error (the built-in default).
+    Default,
+    /// 400 lines — warn and error at the same threshold.
+    Loose,
+    /// Unlimited — all limits disabled.
+    Free,
+}
 
-/// Default limits applied when no config is found anywhere.
+/// Default warn limit applied when no config is found anywhere.
 pub const DEFAULT_WARN: usize = 200;
+/// Default error limit applied when no config is found anywhere.
 pub const DEFAULT_ERROR: usize = 400;
 
 impl Preset {
-    /// Returns (warn_limit, error_limit); None means unlimited.
+    /// Returns `(warn_limit, error_limit)`; `None` means unlimited.
     pub fn limits(self) -> (Option<usize>, Option<usize>) {
         match self {
             Preset::Strict  => (Some(100), Some(100)),

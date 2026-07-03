@@ -1,23 +1,32 @@
+//! YAML configuration loading and hierarchical resolution.
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+/// A parsed `linecheck.yml` configuration file.
 #[derive(Debug, Deserialize, Default, Clone)]
 pub struct Config {
+    /// Ordered list of glob rules. The first matching rule wins.
     #[serde(default)]
     pub rules: Vec<Rule>,
+    /// Glob patterns for files and directories to skip entirely.
     #[serde(default)]
     pub exclude: Vec<String>,
 }
 
+/// A single pattern/limit pair inside a [`Config`].
 #[derive(Debug, Deserialize, Clone)]
 pub struct Rule {
+    /// Glob pattern matched against file paths (e.g. `"**/*.rs"`).
     pub pattern: String,
+    /// Line count at which a warning is emitted. `None` means no warn limit.
     pub warn: Option<usize>,
+    /// Line count at which an error is emitted. `None` means no error limit.
     pub error: Option<usize>,
 }
 
+/// Load a `linecheck.yml` from `path`. Returns [`Config::default`] on any error.
 pub fn load_config(path: &Path) -> Config {
     let Ok(content) = fs::read_to_string(path) else {
         return Config::default();
@@ -37,11 +46,14 @@ pub struct ConfigResolver {
 }
 
 impl ConfigResolver {
+    /// Create a resolver. Pass `explicit` when the user supplied `--config`;
+    /// pass `None` to enable automatic hierarchical lookup.
     pub fn new(explicit: Option<PathBuf>, config_name: &str) -> Self {
         Self { explicit, config_name: config_name.to_owned(), cache: HashMap::new() }
     }
 
     /// Returns the config that applies to `file`.
+    ///
     /// If an explicit config was provided on the CLI, always returns that.
     /// Otherwise walks up the directory tree to find the nearest `linecheck.yml`.
     pub fn resolve(&mut self, file: &Path) -> Option<Config> {

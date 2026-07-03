@@ -1,7 +1,10 @@
+//! File collection: walks paths and applies exclude patterns.
 use glob::Pattern;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
+/// Collect all files reachable from `paths`, skipping anything that matches
+/// an `exclude` glob pattern or that lives inside a hidden directory.
 pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
     let patterns: Vec<Pattern> = exclude.iter().filter_map(|p| Pattern::new(p).ok()).collect();
     let mut files = Vec::new();

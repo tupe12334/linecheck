@@ -1,3 +1,4 @@
+//! Core file-checking logic: resolves limits and returns a [`FileResult`].
 use anyhow::Result;
 use glob::Pattern;
 use std::path::Path;
@@ -6,13 +7,26 @@ use crate::config::Config;
 use crate::lines::file_info;
 use crate::preset::{DEFAULT_ERROR, DEFAULT_WARN};
 
+/// The outcome of checking a single file against its line limits.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-pub enum Status { Ok, Warn, Error }
+pub enum Status {
+    /// Line count is within all limits.
+    Ok,
+    /// Line count exceeds the warn threshold but not the error threshold.
+    Warn,
+    /// Line count exceeds the error threshold.
+    Error,
+}
 
+/// The result of checking a single file.
 pub struct FileResult {
+    /// Whether the file is within limits, at warn level, or at error level.
     pub status: Status,
+    /// Number of lines in the file.
     pub lines: usize,
+    /// The warn threshold that applied, if any.
     pub warn_limit: Option<usize>,
+    /// The error threshold that applied, if any.
     pub error_limit: Option<usize>,
 }
 
@@ -36,6 +50,11 @@ impl Default for CheckOptions {
     }
 }
 
+/// Check a single file and return its [`FileResult`].
+///
+/// Pass `config` when you have already resolved the applicable [`Config`] for
+/// this file. Pass `None` to fall back to `opts.fallback_warn` /
+/// `opts.fallback_error` only.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
     let (lines, ignored) = file_info(path)?;
     if ignored {

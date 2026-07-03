@@ -1,3 +1,4 @@
+//! Formatted output: violations-only, `--status` table, and `--json`.
 use std::path::PathBuf;
 use anyhow::Result;
 
@@ -17,6 +18,7 @@ where F: FnMut(&PathBuf, FileResult)
     Ok(())
 }
 
+/// Print only files that exceed warn or error thresholds.
 pub fn print_violations(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, has_error: &mut bool) -> Result<()> {
     run(files, resolver, opts, |file, r| {
         if r.status < Status::Warn { return; }
@@ -27,6 +29,7 @@ pub fn print_violations(files: &[PathBuf], resolver: &mut ConfigResolver, opts: 
     })
 }
 
+/// Print all files with a line-count / limit table (`--status` mode).
 pub fn print_status(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, has_error: &mut bool) -> Result<()> {
     struct Row { path: String, lines: usize, limit: usize, status: Status }
     let mut rows: Vec<Row> = Vec::new();
@@ -49,6 +52,8 @@ pub fn print_status(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Che
     Ok(())
 }
 
+/// Print results as a JSON array (`--json` flag). In violations mode only
+/// warn/error files are included; in status mode all files are included.
 pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, status_mode: bool, has_error: &mut bool) -> Result<()> {
     let mut items: Vec<String> = Vec::new();
     run(files, resolver, opts, |file, r| {
