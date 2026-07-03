@@ -12,3 +12,10 @@ else
   echo "linecheck not found. Install it with: cargo install linecheck" >&2
   exit 1
 fi
+
+if command -v cargo-llvm-cov >/dev/null 2>&1; then
+  cargo llvm-cov --fail-under-lines 100 --summary-only
+else
+  echo "cargo-llvm-cov not found; skipping coverage check." >&2
+  echo "Install with: cargo install cargo-llvm-cov" >&2
+fi

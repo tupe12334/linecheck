@@ -6,19 +6,19 @@ use linecheck::{
 };
 use std::path::PathBuf;
 
+// `run()` always swallows errors — they're printed to stderr and never propagated.
 fn run<F: FnMut(&PathBuf, FileResult)>(
     files: &[PathBuf],
     resolver: &mut ConfigResolver,
     opts: &CheckOptions,
     mut each: F,
-) -> Result<()> {
+) {
     for f in files {
         match check_file(f, resolver.resolve(f).as_ref(), opts) {
             Ok(r) => each(f, r),
             Err(e) => eprintln!("Error: {e}"),
         }
     }
-    Ok(())
 }
 /// Print only files that exceed warn or error thresholds.
 pub fn print_violations(
@@ -48,7 +48,8 @@ pub fn print_violations(
         if r.status == Status::Error {
             *has_error = true;
         }
-    })
+    });
+    Ok(())
 }
 /// Print all files with a line-count / limit table (`--status` mode).
 pub fn print_status(
@@ -81,7 +82,7 @@ pub fn print_status(
             limit,
             status: r.status,
         });
-    })?;
+    });
     let pw = rows.iter().map(|r| r.path.len()).max().unwrap_or(0);
     let (lw, tw) = (
         rows.iter().map(|r| digits(r.lines)).max().unwrap_or(0),
@@ -148,7 +149,7 @@ pub fn print_json(
                 .unwrap_or_else(|_| "null".into()),
             l = r.lines
         ));
-    })?;
+    });
     println!(
         "{}",
         if items.is_empty() {
@@ -162,3 +163,7 @@ pub fn print_json(
 fn digits(n: usize) -> usize {
     n.checked_ilog10().unwrap_or(0) as usize + 1
 }
+
+#[cfg(test)]
+#[path = "display_tests.rs"]
+mod tests;

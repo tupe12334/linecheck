@@ -2,6 +2,9 @@
 
 rules:
   - pattern: "tests/**/*.rs"
+    warn: 50
+    error: 100
+  - pattern: "**/*_tests.rs"
     warn: 100
     error: 200
   - pattern: "**/*.rs"

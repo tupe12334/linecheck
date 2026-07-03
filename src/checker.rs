@@ -90,3 +90,7 @@ fn resolve_limits(
     }
     (opts.fallback_warn, opts.fallback_error, None, None)
 }
+
+#[cfg(test)]
+#[path = "checker_tests.rs"]
+mod tests;

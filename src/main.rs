@@ -55,5 +55,6 @@ fn main() -> Result<()> {
     } else {
         print_violations(&files, &mut resolver, &opts, &mut has_error)?;
     }
-    std::process::exit(if has_error { 1 } else { 0 });
+    if has_error { std::process::exit(1); }
+    Ok(())
 }
