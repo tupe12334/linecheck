@@ -3,8 +3,6 @@
 [![Crates.io](https://img.shields.io/crates/v/linecheck.svg)](https://crates.io/crates/linecheck)
 [![CI](https://github.com/tupe12334/linecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/tupe12334/linecheck/actions/workflows/ci.yml)
 
-> **Alpha** — experimental, expect breaking changes.
-
 Stop your AI agent from turning one file into a monolith. `linecheck` enforces per-file line limits so bloated files get caught before they pile up.
 
 ## Features
