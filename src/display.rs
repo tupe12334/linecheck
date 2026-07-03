@@ -68,7 +68,11 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
             f = json_str(&file.display().to_string()), l = r.lines,
         ));
     })?;
-    println!("[{}{}]", if items.is_empty() { "" } else { "\n" }, items.join(",\n"));
+    if items.is_empty() {
+        println!("[]");
+    } else {
+        println!("[\n{}\n]", items.join(",\n"));
+    }
     Ok(())
 }
 
