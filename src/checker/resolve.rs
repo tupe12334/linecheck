@@ -19,9 +19,11 @@ pub(super) fn resolve_limits(
                 .and_then(|f| f.to_str())
                 .is_some_and(|f| pat.matches(f))
         };
-        for rule in cfg.rules.iter().filter_map(|r| {
-            Pattern::new(&r.pattern).ok().map(|p| (r, p))
-        }) {
+        for rule in cfg
+            .rules
+            .iter()
+            .filter_map(|r| Pattern::new(&r.pattern).ok().map(|p| (r, p)))
+        {
             if rule.1.matches(path_str) || fname_matches(&rule.1) {
                 return (
                     rule.0.warn,

@@ -14,7 +14,10 @@ fn check_file_with_invalid_glob_rule_falls_back_to_defaults() {
     use std::io::Write;
     use tempfile::NamedTempFile;
 
-    assert!(Pattern::new("[invalid-pattern").is_err(), "pattern should be invalid");
+    assert!(
+        Pattern::new("[invalid-pattern").is_err(),
+        "pattern should be invalid"
+    );
     let mut f = NamedTempFile::new().unwrap();
     writeln!(f, "line1\nline2\nline3").unwrap();
     let cfg = Config {
@@ -34,4 +37,41 @@ fn check_file_with_invalid_glob_rule_falls_back_to_defaults() {
     };
     let result = check_file(f.path(), Some(&cfg), &opts).unwrap();
     assert_eq!(result.status, Status::Ok);
+}
+
+#[test]
+fn non_matching_rule_is_skipped_and_next_rule_wins() {
+    use crate::config::Config;
+    use crate::rule::Rule;
+    use std::io::Write;
+    use tempfile::Builder;
+
+    let mut f = Builder::new().suffix(".rs").tempfile().unwrap();
+    writeln!(f, "line1").unwrap();
+    let cfg = Config {
+        rules: vec![
+            Rule {
+                pattern: "**/*.ts".into(),
+                warn: None,
+                error: Some(1),
+                warn_message: None,
+                error_message: None,
+            },
+            Rule {
+                pattern: "**/*.rs".into(),
+                warn: None,
+                error: Some(99),
+                warn_message: None,
+                error_message: None,
+            },
+        ],
+        exclude: vec![],
+    };
+    let opts = CheckOptions {
+        max_lines: None,
+        fallback_warn: None,
+        fallback_error: None,
+    };
+    let result = check_file(f.path(), Some(&cfg), &opts).unwrap();
+    assert_eq!(result.error_limit, Some(99));
 }
