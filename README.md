@@ -149,6 +149,51 @@ The file will be skipped regardless of its line count. There is no partial ignor
 | `0`  | All files within limits (warnings are printed but non-blocking) |
 | `1`  | One or more files exceed the error threshold |
 
+## Library usage
+
+Add `linecheck` to your `Cargo.toml` and call `check_file` directly:
+
+```toml
+[dependencies]
+linecheck = "0.3"
+```
+
+```rust
+use linecheck::{check_file, CheckOptions, Status};
+use std::path::Path;
+
+let result = check_file(
+    Path::new("src/main.rs"),
+    None,                      // no config file — uses fallback limits
+    &CheckOptions::default(),  // warn at 200, error at 400
+).unwrap();
+
+match result.status {
+    Status::Ok   => println!("ok ({} lines)", result.lines),
+    Status::Warn => println!("warn: {} lines exceeds {}", result.lines, result.warn_limit.unwrap()),
+    Status::Error => println!("error: {} lines exceeds {}", result.lines, result.error_limit.unwrap()),
+}
+```
+
+For walking a whole directory tree with config resolution, combine `collect_files` and `ConfigResolver`:
+
+```rust
+use linecheck::{collect_files, CheckOptions, ConfigResolver, check_file};
+use std::path::PathBuf;
+
+let files = collect_files(&[PathBuf::from("src/")], &[]);
+let mut resolver = ConfigResolver::new(None, "linecheck.yml");
+let opts = CheckOptions::default();
+
+for path in &files {
+    let cfg = resolver.resolve(path);
+    let result = check_file(path, cfg.as_ref(), &opts).unwrap();
+    println!("{}: {:?}", path.display(), result.status);
+}
+```
+
+Full API docs at [docs.rs/linecheck](https://docs.rs/linecheck).
+
 ## CI examples
 
 See the [`examples/`](examples/) folder for ready-to-use configurations:
