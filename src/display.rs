@@ -5,13 +5,9 @@ use anyhow::Result;
 use linecheck::checker::{check_file, CheckOptions};
 use linecheck::result::{FileResult, Status};
 use linecheck::config::ConfigResolver;
-
-fn run<F>(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, mut each: F) -> Result<()>
-where F: FnMut(&PathBuf, FileResult)
-{
+fn run<F: FnMut(&PathBuf, FileResult)>(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, mut each: F) -> Result<()> {
     for file in files {
-        let cfg = resolver.resolve(file);
-        match check_file(file, cfg.as_ref(), opts) {
+        match check_file(file, resolver.resolve(file).as_ref(), opts) {
             Ok(r) => each(file, r),
             Err(e) => eprintln!("Error: {e}"),
         }
@@ -44,32 +40,26 @@ pub fn print_status(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Che
     let lw = rows.iter().map(|r| digits(r.lines)).max().unwrap_or(0);
     let tw = rows.iter().map(|r| digits(r.limit)).max().unwrap_or(0);
     for row in &rows {
-        let tag = match row.status {
-            Status::Error => "[ERROR]".to_string(),
-            Status::Warn  => "[WARN]".to_string(),
-            Status::Ok    => format!("{}%", if row.limit > 0 { row.lines * 100 / row.limit } else { 0 }),
-        };
+        let tag = if row.status == Status::Error { "[ERROR]".to_owned() }
+            else if row.status == Status::Warn { "[WARN]".to_owned() }
+            else { format!("{}%", if row.limit > 0 { row.lines * 100 / row.limit } else { 0 }) };
         println!("{:<pw$}  {:>lw$} / {:<tw$}  {}", row.path, row.lines, row.limit, tag);
     }
     Ok(())
 }
 
-/// Print results as a JSON array (`--json` flag). In violations mode only
-/// warn/error files are included; in status mode all files are included.
+/// Print results as a JSON array (`--json`). Violations mode omits ok files; `--status` includes all.
 pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, status_mode: bool, has_error: &mut bool) -> Result<()> {
     let mut items: Vec<String> = Vec::new();
     run(files, resolver, opts, |file, r| {
         if !status_mode && r.status < Status::Warn { return; }
-        let limit = r.error_limit.or(r.warn_limit);
-        let Some(lim) = limit else { return };
+        let Some(lim) = r.error_limit.or(r.warn_limit) else { return };
         if r.status == Status::Error { *has_error = true; }
         let pct = if lim > 0 { r.lines * 100 / lim } else { 0 };
         let st = match r.status { Status::Error => "error", Status::Warn => "warn", Status::Ok => "ok" };
         let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, serde_json::to_string(m).unwrap()));
-        items.push(format!(
-            r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"{msg}}}"#,
-            f = serde_json::to_string(&file.display().to_string()).unwrap(), l = r.lines,
-        ));
+        items.push(format!(r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"{msg}}}"#,
+            f = serde_json::to_string(&file.display().to_string()).unwrap(), l = r.lines));
     })?;
     println!("{}", if items.is_empty() { "[]".into() } else { format!("[\n{}\n]", items.join(",\n")) });
     Ok(())
