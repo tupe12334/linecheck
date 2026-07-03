@@ -34,11 +34,11 @@ pub struct FileResult {
 /// Options controlling how a single file is checked.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CheckOptions {
-    /// `--max-lines` — overrides all rules and presets.
+    /// When set, overrides every rule and preset — every file uses this as both its warn and error threshold.
     pub max_lines: Option<usize>,
-    /// Warn fallback when no rule matches (from preset or built-in default).
+    /// Warn threshold used when no config rule matches the file. `None` means no warn limit.
     pub fallback_warn: Option<usize>,
-    /// Error fallback when no rule matches (from preset or built-in default).
+    /// Error threshold used when no config rule matches the file. `None` means no error limit.
     pub fallback_error: Option<usize>,
 }
 
