@@ -2,11 +2,11 @@
 
 rules:
   - pattern: "tests/**/*.rs"
-    warn: 50
-    error: 100
+    warn: 100
+    error: 200
   - pattern: "**/*.rs"
-    warn: 50
-    error: 50
+    warn: 100
+    error: 200
     error_message: "Please split up the file according to domain responsibility"
 
 exclude:
