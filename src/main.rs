@@ -1,16 +1,10 @@
-mod checker;
-mod config;
-mod display;
-mod files;
-mod lines;
-
 use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 
-use config::load_config;
-use display::{print_status, print_violations};
-use files::collect_files;
+use linecheck::config::load_config;
+use linecheck::display::{print_status, print_violations};
+use linecheck::files::collect_files;
 
 #[derive(Parser, Debug)]
 #[command(name = "linecheck", about = "Warn or error when files exceed a set line count")]

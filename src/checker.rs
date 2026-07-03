@@ -27,11 +27,12 @@ pub fn check_file(path: &Path, config: &Config, max_lines_override: Option<usize
 
 fn resolve_limits(path: &Path, config: &Config, override_: Option<usize>) -> (Option<usize>, Option<usize>) {
     if let Some(max) = override_ { return (Some(max), Some(max)); }
-    let path_str = path.to_string_lossy();
+    let s = path.to_string_lossy();
+    let path_str = s.strip_prefix("./").unwrap_or(&s);
     for rule in &config.rules {
         let Ok(pat) = Pattern::new(&rule.pattern) else { continue };
         let fname = path.file_name().and_then(|f| f.to_str()).map_or(false, |f| pat.matches(f));
-        if pat.matches(&path_str) || fname { return (rule.warn, rule.error); }
+        if pat.matches(path_str) || fname { return (rule.warn, rule.error); }
     }
     (None, None)
 }

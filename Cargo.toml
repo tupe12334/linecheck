@@ -5,6 +5,14 @@ edition = "2024"
 description = "A fast, configurable tool that warns or errors when files exceed a set line count"
 license = "MIT"
 
+[lib]
+name = "linecheck"
+path = "src/lib.rs"
+
+[[bin]]
+name = "linecheck"
+path = "src/main.rs"
+
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 glob = "0.3"

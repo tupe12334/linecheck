@@ -69,9 +69,18 @@ src/lib.rs:    180 / 200  90%
 src/config.rs:  45 / 200  22%
 ```
 
+For scripting and CI dashboards, use `--json`:
+```bash
+linecheck --status --json src/
+```
+
 ## Configuration
 
-Create a `linecheck.yml` at the root of your project:
+`linecheck` walks up from the current directory to the repo root (`.git`) to find a `linecheck.yml`. If none is found, it falls back to built-in defaults: **warn at 200 lines, error at 400 lines** for all files.
+
+> **Not sure where to start?** 200 lines is a reasonable warn threshold for most source files — it's enough for a focused module but flags anything that's grown too broad.
+
+Create a `linecheck.yml` at the root of your project to override the defaults:
 
 ```yaml
 rules:
