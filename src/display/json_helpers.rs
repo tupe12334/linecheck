@@ -1,9 +1,6 @@
 pub(super) fn msg_json(message: Option<&str>) -> String {
     message.map_or(String::new(), |m| {
-        format!(
-            r#","message":{}"#,
-            serde_json::to_string(m).unwrap_or_else(|_| "null".into())
-        )
+        format!(r#","message":{}"#, serde_json::to_string(m).unwrap())
     })
 }
 
