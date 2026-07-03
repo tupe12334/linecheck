@@ -63,12 +63,12 @@ linecheck --status --json src/
 
 Use a preset flag to apply a built-in strictness level without writing a config file:
 
-| Flag        | Max lines  |
-| ----------- | ---------- |
-| `--strict`  | 100        |
-| `--default` | 200        |
-| `--loose`   | 400        |
-| `--free`    | unlimited  |
+| Flag        | Warn  | Error     |
+| ----------- | ----- | --------- |
+| `--strict`  | 100   | 100       |
+| `--default` | 200   | 400       |
+| `--loose`   | 400   | 400       |
+| `--free`    | —     | —         |
 
 ```bash
 linecheck --strict src/

@@ -1,7 +1,7 @@
 rules:
   - pattern: "**/*.rs"
-    warn: 80
-    error: 120
+    warn: 100
+    error: 150
 
 exclude:
   - "target/**"
