@@ -38,7 +38,6 @@ struct Args {
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    // Treat both "linecheck.yml" and "./linecheck.yml" as the default name.
     let stripped = args.config.strip_prefix(".").unwrap_or(&args.config);
     let is_default_config_name = stripped == std::path::Path::new("linecheck.yml");
     let explicit_config = if !is_default_config_name {
@@ -47,10 +46,8 @@ fn main() -> Result<()> {
             std::process::exit(1);
         }
         Some(args.config.clone())
-    } else if args.config.exists() {
-        Some(args.config.clone())
     } else {
-        None
+        args.config.exists().then(|| args.config.clone())
     };
 
     let mut resolver = ConfigResolver::new(explicit_config, "linecheck.yml");
@@ -67,7 +64,6 @@ fn main() -> Result<()> {
 
     let opts = CheckOptions { max_lines: args.max_lines, fallback_warn, fallback_error };
 
-    // Collect files using root-level config exclude list (best-effort from explicit config)
     let root_cfg = resolver.resolve(std::env::current_dir().unwrap_or_default().as_path());
     let exclude = root_cfg.as_ref().map(|c| c.exclude.clone()).unwrap_or_default();
     let files = collect_files(&args.paths, &exclude);
