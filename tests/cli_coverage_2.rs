@@ -67,6 +67,20 @@ fn explicit_config_that_exists_is_loaded() {
 }
 
 #[test]
+fn config_with_invalid_pattern_warns_and_skips_rule() {
+    let tmp = tempfile::TempDir::new().unwrap();
+    std::fs::write(tmp.path().join("linecheck.yml"), "rules:\n  - pattern: \"[invalid\"\n    error: 1\n  - pattern: \"**/*.rs\"\n    error: 100\n").unwrap();
+    std::fs::write(tmp.path().join("a.rs"), "fn main() {}\n").unwrap();
+    let out = bin().current_dir(tmp.path()).arg(".").output().unwrap();
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(out.status.success(), "stderr: {stderr}");
+    assert!(
+        stderr.contains("Warning"),
+        "expected invalid-pattern warning: {stderr}"
+    );
+}
+
+#[test]
 fn direct_file_arg_is_checked() {
     let tmp = tempfile::TempDir::new().unwrap();
     let file = tmp.path().join("a.rs");
