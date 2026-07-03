@@ -36,7 +36,12 @@ fn warn_invalid_patterns(cfg: &Config, source: &Path) {
     for pat in &cfg.exclude { check(pat, "exclude"); }
 }
 
-/// Resolves per-file configs by walking up the directory tree, caching results.
+#[cfg(test)]
+#[path = "config_tests.rs"]
+mod tests;
+
+/// Resolves per-file configs by walking up the directory tree,
+/// caching loaded configs to avoid redundant disk reads.
 pub struct ConfigResolver {
     explicit: Option<PathBuf>,
     config_name: String,

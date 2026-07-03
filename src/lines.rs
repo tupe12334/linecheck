@@ -27,24 +27,5 @@ pub fn count_newlines(data: &[u8]) -> usize {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn empty() { assert_eq!(count_newlines(b""), 0); }
-
-    #[test]
-    fn no_trailing_newline() { assert_eq!(count_newlines(b"hello\nworld"), 2); }
-
-    #[test]
-    fn trailing_newline() { assert_eq!(count_newlines(b"hello\nworld\n"), 2); }
-
-    #[test]
-    fn single_line() { assert_eq!(count_newlines(b"hello"), 1); }
-
-    #[test]
-    fn ignore_marker_detected() {
-        // Use \x3a for ':' so this test file doesn't self-ignore
-        assert!(count_newlines(b"// linecheck\x3aignore\nfn main() {}") > 0);
-    }
-}
+#[path = "lines_tests.rs"]
+mod tests;

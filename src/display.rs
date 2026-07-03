@@ -5,14 +5,15 @@ use anyhow::Result;
 use linecheck::checker::{check_file, CheckOptions};
 use linecheck::result::{FileResult, Status};
 use linecheck::config::ConfigResolver;
-fn run<F: FnMut(&PathBuf, FileResult)>(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, mut each: F) -> Result<()> {
+
+// `run()` always swallows errors — they're printed to stderr and never propagated.
+fn run<F: FnMut(&PathBuf, FileResult)>(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &CheckOptions, mut each: F) {
     for file in files {
         match check_file(file, resolver.resolve(file).as_ref(), opts) {
             Ok(r) => each(file, r),
             Err(e) => eprintln!("Error: {e}"),
         }
     }
-    Ok(())
 }
 
 /// Print only files that exceed warn or error thresholds.
@@ -24,7 +25,8 @@ pub fn print_violations(files: &[PathBuf], resolver: &mut ConfigResolver, opts: 
         let hint = r.message.as_deref().map_or(String::new(), |m| format!(" — {m}"));
         println!("{}: {} lines{tag}{hint}", file.display(), r.lines);
         if r.status == Status::Error { *has_error = true; }
-    })
+    });
+    Ok(())
 }
 
 /// Print all files with a line-count / limit table (`--status` mode).
@@ -35,7 +37,7 @@ pub fn print_status(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Che
         let Some(limit) = r.error_limit.or(r.warn_limit) else { return };
         if r.status == Status::Error { *has_error = true; }
         rows.push(Row { path: file.display().to_string(), lines: r.lines, limit, status: r.status });
-    })?;
+    });
     let pw = rows.iter().map(|r| r.path.len()).max().unwrap_or(0);
     let lw = rows.iter().map(|r| digits(r.lines)).max().unwrap_or(0);
     let tw = rows.iter().map(|r| digits(r.limit)).max().unwrap_or(0);
@@ -60,10 +62,13 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
         let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, serde_json::to_string(m).unwrap()));
         items.push(format!(r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"{msg}}}"#,
             f = serde_json::to_string(&file.display().to_string()).unwrap(), l = r.lines));
-    })?;
+    });
     println!("{}", if items.is_empty() { "[]".into() } else { format!("[\n{}\n]", items.join(",\n")) });
     Ok(())
 }
 
 fn digits(n: usize) -> usize { n.checked_ilog10().unwrap_or(0) as usize + 1 }
 
+#[cfg(test)]
+#[path = "display_tests.rs"]
+mod tests;
