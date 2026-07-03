@@ -42,8 +42,8 @@ pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> 
         return Ok(FileResult { status: Status::Ok, lines, warn_limit: None, error_limit: None });
     }
     let (warn_limit, error_limit) = resolve_limits(path, config, opts);
-    let status = if error_limit.map_or(false, |l| lines > l) { Status::Error }
-        else if warn_limit.map_or(false, |l| lines > l) { Status::Warn }
+    let status = if error_limit.is_some_and(|l| lines > l) { Status::Error }
+        else if warn_limit.is_some_and(|l| lines > l) { Status::Warn }
         else { Status::Ok };
     Ok(FileResult { status, lines, warn_limit, error_limit })
 }
@@ -55,7 +55,7 @@ fn resolve_limits(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> 
         let path_str = s.strip_prefix("./").unwrap_or(&s);
         for rule in &cfg.rules {
             let Ok(pat) = Pattern::new(&rule.pattern) else { continue };
-            let fname = path.file_name().and_then(|f| f.to_str()).map_or(false, |f| pat.matches(f));
+            let fname = path.file_name().and_then(|f| f.to_str()).is_some_and(|f| pat.matches(f));
             if pat.matches(path_str) || fname { return (rule.warn, rule.error); }
         }
     }

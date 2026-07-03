@@ -24,17 +24,16 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
 fn is_hidden(path: &Path) -> bool {
     path.file_name()
         .and_then(|n| n.to_str())
-        .map_or(false, |s| s.starts_with('.') && s.len() > 1)
+        .is_some_and(|s| s.starts_with('.') && s.len() > 1)
 }
 
 fn is_excluded(path: &Path, root: Option<&Path>, patterns: &[Pattern]) -> bool {
     // Match relative to root when available (the common case for CLI usage)
-    if let Some(root) = root {
-        if let Ok(rel) = path.strip_prefix(root) {
+    if let Some(root) = root
+        && let Ok(rel) = path.strip_prefix(root) {
             let s = rel.to_string_lossy();
             if patterns.iter().any(|p| p.matches(&s)) { return true; }
         }
-    }
     let s = path.to_string_lossy();
     let normalized = s.strip_prefix("./").unwrap_or(&s);
     patterns.iter().any(|p| p.matches(normalized) || p.matches(&s))

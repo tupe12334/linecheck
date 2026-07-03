@@ -10,31 +10,16 @@ Stop your AI agent from turning one file into a monolith. `linecheck` enforces p
 - Configurable warn / error thresholds
 - Inline ignore comments and config-level excludes
 - Works as a CLI, in CI pipelines, and as a library
-- Rust core with bindings for npm, pip, Go, and WASM
+- Rust core (npm, pip, Go, and WASM bindings planned)
 
 ## Installation
-
-> Bindings are coming soon. The Rust CLI is the first target.
 
 **Rust / Cargo**
 ```bash
 cargo install linecheck
 ```
 
-**npm**
-```bash
-npm install -g linecheck
-```
-
-**pip**
-```bash
-pip install linecheck
-```
-
-**Go**
-```bash
-go install github.com/tupe12334/linecheck@latest
-```
+> npm, pip, and Go bindings are coming soon.
 
 ## Usage
 
