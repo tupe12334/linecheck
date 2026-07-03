@@ -71,30 +71,18 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
             f = json_str(&file.display().to_string()), l = r.lines,
         ));
     })?;
-    if items.is_empty() {
-        println!("[]");
-    } else {
-        println!("[\n{}\n]", items.join(",\n"));
-    }
+    println!("{}", if items.is_empty() { "[]".into() } else { format!("[\n{}\n]", items.join(",\n")) });
     Ok(())
 }
 
 fn digits(n: usize) -> usize { n.checked_ilog10().unwrap_or(0) as usize + 1 }
 
 fn json_str(s: &str) -> String {
-    let mut out = String::with_capacity(s.len() + 2);
-    out.push('"');
-    for c in s.chars() {
-        match c {
-            '\\' => out.push_str("\\\\"),
-            '"'  => out.push_str("\\\""),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            c if (c as u32) < 0x20 => { out.push_str(&format!("\\u{:04x}", c as u32)); }
-            c    => out.push(c),
-        }
-    }
-    out.push('"');
-    out
+    let body: String = s.chars().map(|c| match c {
+        '\\' => "\\\\".to_owned(), '"' => "\\\"".to_owned(),
+        '\n' => "\\n".to_owned(),  '\r' => "\\r".to_owned(), '\t' => "\\t".to_owned(),
+        c if (c as u32) < 0x20 => format!("\\u{:04x}", c as u32),
+        c => c.to_string(),
+    }).collect();
+    format!("\"{body}\"")
 }
