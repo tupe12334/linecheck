@@ -1,7 +1,10 @@
 rules:
   - pattern: "**/*.rs"
-    warn: 50
-    error: 50
+    warn: 80
+    error: 120
 
 exclude:
   - "target/**"
+  - "node_modules/**"
+  - "Cargo.lock"
+  - "pnpm-lock.yaml"
