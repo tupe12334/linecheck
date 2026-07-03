@@ -196,10 +196,10 @@ Full API docs at [docs.rs/linecheck](https://docs.rs/linecheck).
 
 ## CI examples
 
-See the [`examples/`](examples/) folder for ready-to-use configurations:
+See the [`examples/`](examples/) folder for ready-to-use setups:
 
-- `examples/ci/` — generic CI shell setup
-- `examples/github/` — GitHub Actions workflow
+- `examples/ci/linecheck.sh` — generic CI shell setup (any CI provider)
+- `examples/github/workflow.yml` — GitHub Actions workflow (copy to `.github/workflows/linecheck.yml`)
 
 ## License
 
