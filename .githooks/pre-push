@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
+cargo clippy --all-targets -- -D warnings
+
 if command -v linecheck >/dev/null 2>&1; then
   linecheck .
 elif cargo build --quiet 2>/dev/null; then
