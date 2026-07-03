@@ -6,7 +6,8 @@ rules:
     error: 100
   - pattern: "**/*.rs"
     warn: 50
-    error: 80
+    error: 50
+    error_message: "Please split up the file according to domain responsibility"
 
 exclude:
   - "target/**"
