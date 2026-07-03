@@ -74,6 +74,24 @@ For scripting and CI dashboards, use `--json`:
 linecheck --status --json src/
 ```
 
+## Presets
+
+Use a preset flag to apply a built-in strictness level without writing a config file:
+
+| Flag        | Max lines  |
+| ----------- | ---------- |
+| `--strict`  | 100        |
+| `--default` | 200        |
+| `--loose`   | 400        |
+| `--free`    | unlimited  |
+
+```bash
+linecheck --strict src/
+linecheck --loose .
+```
+
+Preset flags are overridden by any `linecheck.yml` in scope.
+
 ## Configuration
 
 `linecheck` resolves configuration like `.gitignore` — a `linecheck.yml` applies to its directory and all subdirectories recursively. A nested config overrides the parent for everything inside it. If no config is found anywhere, it falls back to built-in defaults: **warn at 200 lines, error at 400 lines** for all files.

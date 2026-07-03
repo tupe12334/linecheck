@@ -21,18 +21,22 @@ jobs:
         with:
           node-version: 20
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Create Release PR or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          version: npm run version
-          publish: npm run release
+          version: pnpm run version
+          publish: pnpm run release
           title: "chore: release"
           commit: "chore: version packages"
         env:

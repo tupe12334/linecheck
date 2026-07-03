@@ -10,7 +10,7 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
             if !is_excluded(path, &patterns) { files.push(path.clone()); }
         } else if path.is_dir() {
             for entry in WalkDir::new(path).follow_links(false).into_iter()
-                .filter_entry(|e| !is_hidden(e.path()) && !is_excluded(e.path(), &patterns))
+                .filter_entry(|e| (e.depth() == 0 || !is_hidden(e.path())) && !is_excluded(e.path(), &patterns))
                 .filter_map(|e| e.ok())
                 .filter(|e| e.file_type().is_file())
             {
@@ -22,9 +22,9 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
 }
 
 fn is_hidden(path: &Path) -> bool {
-    path.components().any(|c| {
-        c.as_os_str().to_str().map_or(false, |s| s.starts_with('.') && s.len() > 1)
-    })
+    path.file_name()
+        .and_then(|n| n.to_str())
+        .map_or(false, |s| s.starts_with('.') && s.len() > 1)
 }
 
 fn is_excluded(path: &Path, patterns: &[Pattern]) -> bool {
