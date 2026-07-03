@@ -91,6 +91,8 @@ linecheck --strict src/
 linecheck --loose .
 ```
 
+Files are flagged when their line count **exceeds** the threshold — a file with exactly N lines is fine; N+1 triggers the flag.
+
 Preset flags are overridden by any `linecheck.yml` in scope.
 
 ## Configuration

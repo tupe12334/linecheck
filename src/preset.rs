@@ -3,11 +3,11 @@
 /// Built-in strictness presets applied when no config rule matches a file.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Preset {
-    /// 100 lines — warn and error at the same threshold.
+    /// Warn and error when a file exceeds 100 lines.
     Strict,
-    /// 200 lines warn / 400 lines error (the built-in default).
+    /// Warn when a file exceeds 200 lines, error when it exceeds 400 (the built-in default).
     Default,
-    /// 400 lines — warn and error at the same threshold.
+    /// Warn and error when a file exceeds 400 lines.
     Loose,
     /// Unlimited — all limits disabled.
     Free,
