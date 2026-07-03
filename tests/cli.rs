@@ -13,7 +13,10 @@ fn version_flag() {
         stdout.contains("linecheck"),
         "expected 'linecheck' in: {stdout}"
     );
-    assert!(stdout.contains("0.3"), "expected version in: {stdout}");
+    assert!(
+        stdout.contains(env!("CARGO_PKG_VERSION")),
+        "expected version in: {stdout}"
+    );
 }
 
 #[test]
