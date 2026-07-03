@@ -21,19 +21,12 @@ pub struct CheckOptions {
 
 impl Default for CheckOptions {
     fn default() -> Self {
-        Self {
-            max_lines: None,
-            fallback_warn: Some(DEFAULT_WARN),
-            fallback_error: Some(DEFAULT_ERROR),
-        }
+        Self { max_lines: None, fallback_warn: Some(DEFAULT_WARN), fallback_error: Some(DEFAULT_ERROR) }
     }
 }
 
 /// Check a single file and return its [`FileResult`].
-///
-/// Pass `config` when you have already resolved the applicable [`Config`] for
-/// this file. Pass `None` to fall back to `opts.fallback_warn` /
-/// `opts.fallback_error` only.
+/// Pass `None` for `config` to fall back to the thresholds in `opts`.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
     let (lines, ignored) = file_info(path)?;
     if ignored {

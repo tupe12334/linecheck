@@ -2,7 +2,6 @@
 use std::path::PathBuf;
 use anyhow::Result;
 
-use crate::escape::json_str;
 use linecheck::checker::{check_file, CheckOptions};
 use linecheck::result::{FileResult, Status};
 use linecheck::config::ConfigResolver;
@@ -66,10 +65,10 @@ pub fn print_json(files: &[PathBuf], resolver: &mut ConfigResolver, opts: &Check
         if r.status == Status::Error { *has_error = true; }
         let pct = if lim > 0 { r.lines * 100 / lim } else { 0 };
         let st = match r.status { Status::Error => "error", Status::Warn => "warn", Status::Ok => "ok" };
-        let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, json_str(m)));
+        let msg = r.message.as_deref().map_or(String::new(), |m| format!(r#","message":{}"#, serde_json::to_string(m).unwrap()));
         items.push(format!(
             r#"  {{"file":{f},"lines":{l},"limit":{lim},"percent":{pct},"status":"{st}"{msg}}}"#,
-            f = json_str(&file.display().to_string()), l = r.lines,
+            f = serde_json::to_string(&file.display().to_string()).unwrap(), l = r.lines,
         ));
     })?;
     println!("{}", if items.is_empty() { "[]".into() } else { format!("[\n{}\n]", items.join(",\n")) });
