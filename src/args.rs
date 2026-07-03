@@ -2,7 +2,11 @@ use clap::{ArgGroup, Parser};
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
-#[command(name = "linecheck", about = "Warn or error when files exceed a set line count", version)]
+#[command(
+    name = "linecheck",
+    about = "Warn or error when files exceed a set line count",
+    version
+)]
 #[command(group(ArgGroup::new("preset_group").args(["strict", "default_preset", "loose", "free"])))]
 pub struct Args {
     #[arg(default_value = ".", help = "Files or directories to check")]
@@ -11,7 +15,10 @@ pub struct Args {
     pub max_lines: Option<usize>,
     #[arg(long, default_value = "linecheck.yml", help = "Path to config file")]
     pub config: PathBuf,
-    #[arg(long, help = "Show all files with their line counts and usage percentage")]
+    #[arg(
+        long,
+        help = "Show all files with their line counts and usage percentage"
+    )]
     pub status: bool,
     #[arg(long, help = "Output results as JSON")]
     pub json: bool,

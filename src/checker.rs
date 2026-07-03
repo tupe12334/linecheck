@@ -1,11 +1,11 @@
 //! Core file-checking logic: resolves limits and returns a [`FileResult`].
-use anyhow::Result;
-use glob::Pattern;
-use std::path::Path;
 use crate::config::Config;
 use crate::lines::file_info;
 use crate::preset::{DEFAULT_ERROR, DEFAULT_WARN};
 use crate::result::{FileResult, Status};
+use anyhow::Result;
+use glob::Pattern;
+use std::path::Path;
 /// Options controlling how a single file is checked.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CheckOptions {
@@ -18,31 +18,73 @@ pub struct CheckOptions {
 }
 impl Default for CheckOptions {
     fn default() -> Self {
-        Self { max_lines: None, fallback_warn: Some(DEFAULT_WARN), fallback_error: Some(DEFAULT_ERROR) }
+        Self {
+            max_lines: None,
+            fallback_warn: Some(DEFAULT_WARN),
+            fallback_error: Some(DEFAULT_ERROR),
+        }
     }
 }
 /// Check a single file; pass `None` for `config` to fall back to the thresholds in `opts`.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
     let (lines, ignored) = file_info(path)?;
-    if ignored { return Ok(FileResult { status: Status::Ok, lines, warn_limit: None, error_limit: None, message: None }); }
+    if ignored {
+        return Ok(FileResult {
+            status: Status::Ok,
+            lines,
+            warn_limit: None,
+            error_limit: None,
+            message: None,
+        });
+    }
     let (warn_limit, error_limit, warn_message, error_message) = resolve_limits(path, config, opts);
-    let status = if error_limit.is_some_and(|l| lines > l) { Status::Error }
-        else if warn_limit.is_some_and(|l| lines > l) { Status::Warn }
-        else { Status::Ok };
-    let message = match status { Status::Error => error_message, Status::Warn => warn_message, Status::Ok => None };
-    Ok(FileResult { status, lines, warn_limit, error_limit, message })
+    let status = if error_limit.is_some_and(|l| lines > l) {
+        Status::Error
+    } else if warn_limit.is_some_and(|l| lines > l) {
+        Status::Warn
+    } else {
+        Status::Ok
+    };
+    let message = match status {
+        Status::Error => error_message,
+        Status::Warn => warn_message,
+        Status::Ok => None,
+    };
+    Ok(FileResult {
+        status,
+        lines,
+        warn_limit,
+        error_limit,
+        message,
+    })
 }
 
-fn resolve_limits(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> (Option<usize>, Option<usize>, Option<String>, Option<String>) {
-    if let Some(max) = opts.max_lines { return (Some(max), Some(max), None, None); }
+fn resolve_limits(
+    path: &Path,
+    config: Option<&Config>,
+    opts: &CheckOptions,
+) -> (Option<usize>, Option<usize>, Option<String>, Option<String>) {
+    if let Some(max) = opts.max_lines {
+        return (Some(max), Some(max), None, None);
+    }
     if let Some(cfg) = config {
         let s = path.to_string_lossy();
         let path_str = s.strip_prefix("./").unwrap_or(&s);
         for rule in &cfg.rules {
-            let Ok(pat) = Pattern::new(&rule.pattern) else { continue };
-            let fname = path.file_name().and_then(|f| f.to_str()).is_some_and(|f| pat.matches(f));
+            let Ok(pat) = Pattern::new(&rule.pattern) else {
+                continue;
+            };
+            let fname = path
+                .file_name()
+                .and_then(|f| f.to_str())
+                .is_some_and(|f| pat.matches(f));
             if pat.matches(path_str) || fname {
-                return (rule.warn, rule.error, rule.warn_message.clone(), rule.error_message.clone());
+                return (
+                    rule.warn,
+                    rule.error,
+                    rule.warn_message.clone(),
+                    rule.error_message.clone(),
+                );
             }
         }
     }
