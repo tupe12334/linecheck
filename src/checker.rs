@@ -19,6 +19,7 @@ pub enum Status {
 }
 
 /// The result of checking a single file.
+#[derive(Debug, Clone, Copy)]
 pub struct FileResult {
     /// Whether the file is within limits, at warn level, or at error level.
     pub status: Status,
@@ -31,6 +32,7 @@ pub struct FileResult {
 }
 
 /// Options controlling how a single file is checked.
+#[derive(Debug, Clone)]
 pub struct CheckOptions {
     /// `--max-lines` — overrides all rules and presets.
     pub max_lines: Option<usize>,
