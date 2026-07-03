@@ -19,17 +19,16 @@ pub(super) fn resolve_limits(
                 .and_then(|f| f.to_str())
                 .is_some_and(|f| pat.matches(f))
         };
-        for rule in cfg
-            .rules
-            .iter()
-            .filter_map(|r| Pattern::new(&r.pattern).ok().map(|p| (r, p)))
-        {
-            if rule.1.matches(path_str) || fname_matches(&rule.1) {
+        for (rule, pat) in cfg.rules.iter().filter_map(|r| {
+            let p = Pattern::new(&r.pattern).ok()?;
+            Some((r, p))
+        }) {
+            if pat.matches(path_str) || fname_matches(&pat) {
                 return (
-                    rule.0.warn,
-                    rule.0.error,
-                    rule.0.warn_message.clone(),
-                    rule.0.error_message.clone(),
+                    rule.warn,
+                    rule.error,
+                    rule.warn_message.clone(),
+                    rule.error_message.clone(),
                 );
             }
         }
