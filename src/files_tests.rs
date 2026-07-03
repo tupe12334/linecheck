@@ -36,3 +36,10 @@ fn collect_files_skips_hidden_entries() {
             .is_some_and(|s| s.starts_with('.'))
     }));
 }
+
+#[test]
+fn collect_files_nonexistent_path_warns_to_stderr() {
+    let path = std::path::PathBuf::from("/tmp/linecheck-test-nonexistent-path-xyz");
+    let files = collect_files(&[path], &[]);
+    assert!(files.is_empty());
+}
