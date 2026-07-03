@@ -9,18 +9,18 @@ use linecheck::files::collect_files;
 use linecheck::preset::Preset;
 
 #[derive(Parser, Debug)]
-#[command(name = "linecheck", about = "Warn or error when files exceed a set line count")]
+#[command(name = "linecheck", about = "Warn or error when files exceed a set line count", version)]
 #[command(group(ArgGroup::new("preset_group").args(["strict", "default_preset", "loose", "free"])))]
 struct Args {
-    #[arg(default_value = ".")]
+    #[arg(default_value = ".", help = "Files or directories to check")]
     paths: Vec<PathBuf>,
-    #[arg(long)]
+    #[arg(long, help = "Override line limit for all files")]
     max_lines: Option<usize>,
-    #[arg(long, default_value = "linecheck.yml")]
+    #[arg(long, default_value = "linecheck.yml", help = "Path to config file")]
     config: PathBuf,
-    #[arg(long)]
+    #[arg(long, help = "Show all files with their line counts and usage percentage")]
     status: bool,
-    #[arg(long, help = "Output JSON")]
+    #[arg(long, help = "Output results as JSON")]
     json: bool,
     #[arg(long, help = "Preset: 100 lines (warn=error)")]
     strict: bool,
@@ -28,7 +28,7 @@ struct Args {
     default_preset: bool,
     #[arg(long, help = "Preset: 400 lines (warn=error)")]
     loose: bool,
-    #[arg(long, help = "Preset: unlimited")]
+    #[arg(long, help = "Preset: unlimited (disable all limits)")]
     free: bool,
 }
 

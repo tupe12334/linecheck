@@ -4,6 +4,10 @@ version = "0.3.0"
 edition = "2024"
 description = "A fast, configurable tool that warns or errors when files exceed a set line count"
 license = "MIT"
+repository = "https://github.com/tupe12334/linecheck"
+homepage = "https://github.com/tupe12334/linecheck"
+keywords = ["lint", "lines", "cli", "check", "ai"]
+categories = ["command-line-utilities", "development-tools"]
 
 [lib]
 name = "linecheck"
