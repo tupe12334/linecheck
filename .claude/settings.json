@@ -18,6 +18,15 @@
             "command": "pnpm exec block-no-verify"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import sys, json; d=json.load(sys.stdin); fp=d.get('tool_input',{}).get('file_path',''); sys.exit(0) if 'linecheck.yml' not in fp else (print(json.dumps({'decision':'block','reason':'Editing linecheck.yml is not allowed.'})) or sys.exit(0))\""
+          }
+        ]
       }
     ]
   }
