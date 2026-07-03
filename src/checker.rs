@@ -19,7 +19,7 @@ pub enum Status {
 }
 
 /// The result of checking a single file.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct FileResult {
     /// Whether the file is within limits, at warn level, or at error level.
     pub status: Status,

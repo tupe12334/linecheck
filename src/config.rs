@@ -89,7 +89,11 @@ impl ConfigResolver {
         self.cache
             .entry(path.clone())
             .or_insert_with(|| {
-                fs::read_to_string(&path).ok().and_then(|s| serde_yaml::from_str(&s).ok())
+                fs::read_to_string(&path).ok().and_then(|s| {
+                    serde_yaml::from_str::<Config>(&s).ok().inspect(|cfg| {
+                        warn_invalid_patterns(cfg, &path);
+                    })
+                })
             })
             .clone()
     }
