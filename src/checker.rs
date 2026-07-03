@@ -32,7 +32,7 @@ pub struct FileResult {
 }
 
 /// Options controlling how a single file is checked.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CheckOptions {
     /// `--max-lines` — overrides all rules and presets.
     pub max_lines: Option<usize>,
