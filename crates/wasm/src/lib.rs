@@ -1,4 +1,5 @@
-//! WASM bindings for `linecheck`, published to npm as `linecheck`.
+//! WASM bindings for `linecheck` (not yet published — see the crate's
+//! `publish = false` in Cargo.toml).
 //!
 //! This crate is a thin wrapper: all checking logic lives in the `linecheck`
 //! core crate's [`linecheck::check_content`], which works on in-memory bytes

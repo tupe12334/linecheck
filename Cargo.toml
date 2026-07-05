@@ -27,7 +27,6 @@ exclude = [
     "scripts/**",
     "node_modules/**",
     "crates/**",
-    "npm/**",
 ]
 
 [lib]
