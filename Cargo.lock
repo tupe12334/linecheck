@@ -262,6 +262,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "linecheck-wasm-wasi"
+version = "1.0.0"
+dependencies = [
+ "linecheck",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+]
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

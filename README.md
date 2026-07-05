@@ -11,7 +11,7 @@ Stop your AI agent from turning one file into a monolith. `linecheck` enforces p
 - Configurable warn / error thresholds
 - Inline ignore comments and config-level excludes
 - Works as a CLI, in CI pipelines, and as a library
-- Rust core (npm, pip, Go, and WASM bindings planned)
+- Rust core, WASM bindings, and a Go binding via WASI (npm and pip bindings planned)
 
 ## Installation
 
@@ -20,7 +20,11 @@ Stop your AI agent from turning one file into a monolith. `linecheck` enforces p
 cargo install linecheck
 ```
 
-> npm, pip, and Go bindings are coming soon.
+> npm and pip bindings are coming soon.
+
+**Go**, via [wazero](https://wazero.io) (no cgo): build `crates/wasm-wasi` for
+`wasm32-wasip1` and load it from Go — see [`examples/go`](examples/go) for a full
+working example.
 
 ## Usage
 
