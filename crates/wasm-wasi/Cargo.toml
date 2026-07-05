@@ -1,0 +1,21 @@
+[package]
+name = "linecheck-wasm-wasi"
+version = "1.0.0"
+edition = "2024"
+license = "MIT"
+description = "WASI bindings for linecheck, consumable from Go via wazero/wasmtime-go"
+repository = "https://github.com/tupe12334/linecheck"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+linecheck = { path = "../.." }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+must_use_candidate = "warn"

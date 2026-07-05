@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/wasm"]
+members = ["crates/wasm", "crates/wasm-wasi"]
 # `cargo build`/`test`/`llvm-cov` without --workspace target only the CLI crate;
 # crates/wasm is built and linted explicitly in CI (see .github/workflows/ci.yml).
 default-members = ["."]
