@@ -19,6 +19,7 @@ pub fn file_info(path: &Path) -> Result<(usize, bool)> {
 ///
 /// Used by hosts that supply file content directly instead of a filesystem
 /// path, such as the WASM bindings (and any future non-Rust bindings).
+#[must_use]
 pub fn content_info(data: &[u8]) -> (usize, bool) {
     let ignored = data
         .windows(IGNORE_MARKER.len())

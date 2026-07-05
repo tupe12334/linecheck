@@ -21,6 +21,7 @@ pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> 
 /// `path` is used only for glob-pattern matching — it does not need to exist on disk.
 /// This is the entry point for hosts that supply content directly rather than a
 /// readable file, such as the WASM bindings (and any future non-Rust bindings).
+#[must_use]
 pub fn check_content(
     path: &Path,
     content: &[u8],
