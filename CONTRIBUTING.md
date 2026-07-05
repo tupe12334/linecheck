@@ -6,6 +6,7 @@ Thanks for your interest in contributing!
 
 - Rust 1.85+ (`rustup update stable`)
 - Node.js 20+ and pnpm 9 (only needed for changesets / releases)
+- The `wasm32-unknown-unknown` target (only needed to build/test `crates/wasm`, the WASM bindings crate)
 
 ## Development workflow
 

@@ -12,10 +12,19 @@ const IGNORE_MARKER: &[u8] = b"linecheck\x3aignore";
 /// `is_ignored` is `true` when the file contains the ignore marker anywhere.
 pub fn file_info(path: &Path) -> Result<(usize, bool)> {
     let data = fs::read(path).with_context(|| format!("reading {}", path.display()))?;
+    Ok(content_info(&data))
+}
+
+/// Compute `(line_count, is_ignored)` directly from in-memory bytes.
+///
+/// Used by hosts that supply file content directly instead of a filesystem
+/// path, such as the WASM bindings (and any future non-Rust bindings).
+#[must_use]
+pub fn content_info(data: &[u8]) -> (usize, bool) {
     let ignored = data
         .windows(IGNORE_MARKER.len())
         .any(|w| w == IGNORE_MARKER);
-    Ok((count_newlines(&data), ignored))
+    (count_newlines(data), ignored)
 }
 
 /// Count logical lines in raw file bytes.

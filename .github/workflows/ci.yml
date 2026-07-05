@@ -16,6 +16,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
+          targets: wasm32-unknown-unknown
 
       - name: Cache cargo
         uses: actions/cache@v4
@@ -37,6 +38,12 @@ jobs:
 
       - name: Clippy
         run: cargo clippy --all-targets -- -D warnings
+
+      - name: Build wasm bindings
+        run: cargo build -p linecheck-wasm --target wasm32-unknown-unknown --release
+
+      - name: Clippy wasm bindings
+        run: cargo clippy -p linecheck-wasm --target wasm32-unknown-unknown --all-targets -- -D warnings
 
       - name: Docs
         run: cargo doc --no-deps

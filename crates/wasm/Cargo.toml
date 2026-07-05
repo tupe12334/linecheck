@@ -1,0 +1,22 @@
+[package]
+name = "linecheck-wasm"
+version = "1.0.0"
+edition = "2024"
+license = "MIT"
+description = "WASM bindings for linecheck"
+repository = "https://github.com/tupe12334/linecheck"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+linecheck = { path = "../.." }
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
+wasm-bindgen = "0.2"
+serde-wasm-bindgen = "0.6"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+must_use_candidate = "warn"

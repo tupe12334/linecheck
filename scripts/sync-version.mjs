@@ -1,5 +1,5 @@
-// Reads the version from package.json and writes it back to Cargo.toml,
-// keeping the two in sync after `changeset version` bumps package.json.
+// Reads the version from package.json and writes it back to every Cargo.toml,
+// keeping them in sync after `changeset version` bumps package.json.
 import { readFileSync, writeFileSync } from "fs";
 
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
@@ -10,8 +10,10 @@ if (!version) {
   process.exit(1);
 }
 
-let cargo = readFileSync("Cargo.toml", "utf8");
-cargo = cargo.replace(/^version = ".*"/m, `version = "${version}"`);
-writeFileSync("Cargo.toml", cargo);
+for (const path of ["Cargo.toml", "crates/wasm/Cargo.toml"]) {
+  let cargo = readFileSync(path, "utf8");
+  cargo = cargo.replace(/^version = ".*"/m, `version = "${version}"`);
+  writeFileSync(path, cargo);
+}
 
-console.log(`Synced version ${version} to Cargo.toml`);
+console.log(`Synced version ${version} to Cargo.toml files`);
