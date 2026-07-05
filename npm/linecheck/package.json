@@ -1,0 +1,22 @@
+{
+  "name": "linecheck",
+  "version": "1.0.0",
+  "description": "Enforce per-file line limits — WASM library bindings for linecheck",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tupe12334/linecheck"
+  },
+  "homepage": "https://github.com/tupe12334/linecheck",
+  "keywords": ["lint", "lines", "check", "wasm"],
+  "main": "dist/linecheck.js",
+  "types": "dist/linecheck.d.ts",
+  "files": [
+    "dist/linecheck.js",
+    "dist/linecheck.d.ts",
+    "dist/linecheck_bg.wasm",
+    "dist/linecheck_bg.wasm.d.ts",
+    "README.md",
+    "LICENSE"
+  ]
+}

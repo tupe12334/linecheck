@@ -6,6 +6,7 @@ Thanks for your interest in contributing!
 
 - Rust 1.85+ (`rustup update stable`)
 - Node.js 20+ and pnpm 9 (only needed for changesets / releases)
+- `wasm-pack` and the `wasm32-unknown-unknown` target (only needed to build/test `crates/wasm`, the npm library bindings)
 
 ## Development workflow
 
@@ -40,7 +41,7 @@ This project uses [changesets](https://github.com/changesets/changesets) for ver
 # Describe your change
 pnpm changeset
 
-# Changesets Action on CI handles the actual publish to crates.io
+# Changesets Action on CI handles the actual publish to crates.io and npm
 ```
 
 ## Code style

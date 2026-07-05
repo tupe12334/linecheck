@@ -1,4 +1,5 @@
 use super::*;
+use crate::result::Status;
 
 #[test]
 fn status_ordering() {
@@ -74,4 +75,50 @@ fn non_matching_rule_is_skipped_and_next_rule_wins() {
     };
     let result = check_file(f.path(), Some(&cfg), &opts).unwrap();
     assert_eq!(result.error_limit, Some(99));
+}
+
+#[test]
+fn check_content_matches_rule_by_virtual_path() {
+    use crate::config::Config;
+    use crate::rule::Rule;
+    use std::path::Path;
+
+    let cfg = Config {
+        rules: vec![Rule {
+            pattern: "**/*.rs".into(),
+            warn: None,
+            error: Some(1),
+            warn_message: None,
+            error_message: Some("too long".into()),
+        }],
+        exclude: vec![],
+    };
+    let opts = CheckOptions {
+        max_lines: None,
+        fallback_warn: None,
+        fallback_error: None,
+    };
+    let result = check_content(Path::new("src/main.rs"), b"line1\nline2\n", Some(&cfg), &opts);
+    assert_eq!(result.status, Status::Error);
+    assert_eq!(result.lines, 2);
+    assert_eq!(result.message.as_deref(), Some("too long"));
+}
+
+#[test]
+fn check_content_respects_ignore_marker() {
+    use std::path::Path;
+
+    let opts = CheckOptions {
+        max_lines: Some(0),
+        fallback_warn: None,
+        fallback_error: None,
+    };
+    // Escape ':' as \x3a so this test file doesn't self-ignore.
+    let result = check_content(
+        Path::new("src/generated.rs"),
+        b"// linecheck\x3aignore\nline1\n",
+        None,
+        &opts,
+    );
+    assert_eq!(result.status, Status::Ok);
 }
