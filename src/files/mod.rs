@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 /// Collect all files reachable from `paths`, skipping excluded or hidden paths.
+#[must_use]
 pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
     let pats: Vec<Pattern> = exclude
         .iter()

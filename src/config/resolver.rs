@@ -12,6 +12,7 @@ pub struct ConfigResolver {
 
 impl ConfigResolver {
     /// Create a resolver: `Some(path)` pins one config, `None` enables hierarchical lookup.
+    #[must_use]
     pub fn new(explicit: Option<PathBuf>, config_name: &str) -> Self {
         Self {
             explicit,

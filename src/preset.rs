@@ -20,6 +20,7 @@ pub const DEFAULT_ERROR: usize = 400;
 
 impl Preset {
     /// Returns `(warn_limit, error_limit)`; `None` means unlimited.
+    #[must_use]
     pub fn limits(self) -> (Option<usize>, Option<usize>) {
         match self {
             Preset::Strict => (Some(100), Some(100)),
