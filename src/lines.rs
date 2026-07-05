@@ -22,6 +22,7 @@ pub fn file_info(path: &Path) -> Result<(usize, bool)> {
 ///
 /// A file with no trailing newline has its last line counted anyway, so
 /// `"hello\nworld"` returns 2 just like `"hello\nworld\n"`.
+#[must_use]
 pub fn count_newlines(data: &[u8]) -> usize {
     if data.is_empty() {
         return 0;

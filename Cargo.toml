@@ -43,4 +43,5 @@ anyhow = "1"
 tempfile = "3"
 
 [lints.clippy]
-all = "deny"
+all = { level = "deny", priority = -1 }
+must_use_candidate = "warn"

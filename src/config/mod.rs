@@ -20,6 +20,7 @@ pub struct Config {
 }
 
 /// Load a `linecheck.yml` from `path`. Returns [`Config::default`] on any error.
+#[must_use]
 pub fn load_config(path: &Path) -> Config {
     let Ok(s) = fs::read_to_string(path) else {
         return Config::default();
