@@ -11,7 +11,7 @@ Stop your AI agent from turning one file into a monolith. `linecheck` enforces p
 - Configurable warn / error thresholds
 - Inline ignore comments and config-level excludes
 - Works as a CLI, in CI pipelines, and as a library
-- Rust core, WASM bindings, and a Go binding via WASI (npm and pip bindings planned)
+- Rust core, WASM bindings for npm, and a Go binding via WASI (pip bindings planned)
 
 ## Installation
 
@@ -20,11 +20,27 @@ Stop your AI agent from turning one file into a monolith. `linecheck` enforces p
 cargo install linecheck
 ```
 
-> npm and pip bindings are coming soon.
+**npm** — CLI, no Rust toolchain required (runs the real binary under Node's WASI runtime):
+```bash
+pnpm dlx linecheck .
+# or: npx linecheck .
+```
+
+Or use it as a library — check in-memory content directly, no filesystem access required:
+```bash
+npm install linecheck
+```
+```js
+const { check } = require("linecheck");
+check("src/main.rs", fileContents); // { status, lines, warn_limit, error_limit, message }
+```
+See [`npm/linecheck/README.md`](npm/linecheck/README.md) for the full JS API.
 
 **Go**, via [wazero](https://wazero.io) (no cgo): build `crates/wasm-wasi` for
 `wasm32-wasip1` and load it from Go — see [`examples/go`](examples/go) for a full
 working example.
+
+> pip bindings are planned, built on the same core crate.
 
 ## Usage
 
