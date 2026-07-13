@@ -25,19 +25,11 @@ pub fn file_info(path: &Path) -> Result<(usize, bool)> {
 /// against a line-length threshold produces false positives.
 #[must_use]
 pub fn content_info(data: &[u8]) -> (usize, bool) {
-    let ignored = is_binary(data)
+    let ignored = content_inspector::inspect(data).is_binary()
         || data
             .windows(IGNORE_MARKER.len())
             .any(|w| w == IGNORE_MARKER);
     (count_newlines(data), ignored)
-}
-
-/// Heuristic: a NUL byte anywhere in the first 8000 bytes marks the content
-/// as binary. Same heuristic used by git and GNU grep.
-#[must_use]
-fn is_binary(data: &[u8]) -> bool {
-    let sample_len = data.len().min(8000);
-    data[..sample_len].contains(&0)
 }
 
 /// Count logical lines in raw file bytes.
