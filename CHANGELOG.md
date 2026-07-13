@@ -1,5 +1,17 @@
 # linecheck
 
+## 1.1.0
+
+### Minor Changes
+
+- 0417b5d: Add crates/wasm-wasi: a plain-ABI wasm32-wasip1 binding so Go (via wazero) can consume linecheck::check_content (#10).
+- 691f329: Add `check_content` to check in-memory file content without touching the filesystem, as the foundation for non-Rust bindings. Includes a `crates/wasm` WASM-bindgen crate built on top (not yet published — packaging/publishing to follow separately).
+
+### Patch Changes
+
+- 0417b5d: Add #[must_use] to public API functions flagged by clippy::must_use_candidate; no behavior change (#8).
+- d0bac9d: Skip binary files instead of counting their raw newline bytes as lines. Detected via the `content_inspector` crate; previously an unmatched binary file (e.g. an image) fell back to the default threshold and could false-positive error (#14).
+
 ## 1.0.0
 
 ### Major Changes
