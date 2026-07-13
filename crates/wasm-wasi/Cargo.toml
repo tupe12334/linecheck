@@ -19,3 +19,4 @@ serde_yaml = "0.9"
 [lints.clippy]
 all = { level = "deny", priority = -1 }
 must_use_candidate = "warn"
+dbg_macro = "deny"
