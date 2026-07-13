@@ -98,7 +98,12 @@ fn check_content_matches_rule_by_virtual_path() {
         fallback_warn: None,
         fallback_error: None,
     };
-    let result = check_content(Path::new("src/main.rs"), b"line1\nline2\n", Some(&cfg), &opts);
+    let result = check_content(
+        Path::new("src/main.rs"),
+        b"line1\nline2\n",
+        Some(&cfg),
+        &opts,
+    );
     assert_eq!(result.status, Status::Error);
     assert_eq!(result.lines, 2);
     assert_eq!(result.message.as_deref(), Some("too long"));

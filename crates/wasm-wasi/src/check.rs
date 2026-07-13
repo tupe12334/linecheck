@@ -5,16 +5,14 @@ use std::path::Path;
 
 /// Check in-memory file content against a `linecheck.yml`-style config.
 ///
-/// `filename`/`content`/`config_yaml` are read as UTF-8 byte ranges out of linear
-/// memory (`config_len == 0` means "no config, use built-in 200/400 warn/error
-/// thresholds"). Returns a packed `(ptr << 32) | len` pointing at a JSON-encoded
-/// result object (`{status, lines, warn_limit, error_limit, message}`); a malformed
-/// config yields `status: "error"` with the parse error in `message`. The caller
-/// must free the returned pointer with [`crate::memory::dealloc`].
+/// Args are read as UTF-8 byte ranges out of linear memory (`config_len == 0`
+/// means "no config, use built-in 200/400 warn/error thresholds"). Returns a
+/// packed `(ptr << 32) | len` pointing at a JSON-encoded result object; a
+/// malformed config yields `status: "error"`. Caller must free the returned
+/// pointer with [`crate::memory::dealloc`].
 ///
 /// # Safety
-/// Each `_ptr`/`_len` pair must describe a valid, initialized, readable UTF-8 byte
-/// range in this module's linear memory.
+/// Each `_ptr`/`_len` pair must describe a valid, readable UTF-8 byte range.
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn check(
     filename_ptr: u32,
@@ -44,5 +42,9 @@ pub unsafe extern "C" fn check(
         )),
     };
 
-    leak(serde_json::to_vec(&out).unwrap_or_default().into_boxed_slice())
+    leak(
+        serde_json::to_vec(&out)
+            .unwrap_or_default()
+            .into_boxed_slice(),
+    )
 }

@@ -23,7 +23,11 @@ use wasm_bindgen::prelude::*;
 /// - `config_yaml`: optional `linecheck.yml` source; omit (`undefined`/`null`) to fall
 ///   back to the built-in 200/400 warn/error thresholds.
 #[wasm_bindgen]
-pub fn check(filename: &str, content: &str, config_yaml: Option<String>) -> Result<JsValue, JsValue> {
+pub fn check(
+    filename: &str,
+    content: &str,
+    config_yaml: Option<String>,
+) -> Result<JsValue, JsValue> {
     let config = config_yaml
         .map(|yaml| serde_yaml::from_str::<Config>(&yaml))
         .transpose()

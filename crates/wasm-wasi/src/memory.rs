@@ -18,7 +18,11 @@ pub extern "C" fn alloc(len: u32) -> u32 {
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn dealloc(ptr: u32, len: u32) {
     unsafe {
-        drop(Vec::from_raw_parts(ptr as *mut u8, len as usize, len as usize));
+        drop(Vec::from_raw_parts(
+            ptr as *mut u8,
+            len as usize,
+            len as usize,
+        ));
     }
 }
 
