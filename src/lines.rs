@@ -15,15 +15,15 @@ pub fn file_info(path: &Path) -> Result<(usize, bool)> {
     Ok(content_info(&data))
 }
 
-/// Compute `(line_count, is_ignored)` directly from in-memory bytes.
-///
-/// Used by hosts that supply file content directly instead of a filesystem
-/// path, such as the WASM bindings (and any future non-Rust bindings).
+/// Compute `(line_count, is_ignored)` directly from in-memory bytes (used by
+/// WASM bindings). Binary content is treated as ignored — its raw newline
+/// bytes aren't meaningful lines.
 #[must_use]
 pub fn content_info(data: &[u8]) -> (usize, bool) {
-    let ignored = data
-        .windows(IGNORE_MARKER.len())
-        .any(|w| w == IGNORE_MARKER);
+    let ignored = content_inspector::inspect(data).is_binary()
+        || data
+            .windows(IGNORE_MARKER.len())
+            .any(|w| w == IGNORE_MARKER);
     (count_newlines(data), ignored)
 }
 

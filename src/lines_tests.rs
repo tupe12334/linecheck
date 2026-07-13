@@ -32,3 +32,18 @@ fn file_info_missing_file_returns_err() {
     let result = file_info(Path::new("/tmp/linecheck-test-nonexistent-xyz.txt"));
     assert!(result.is_err());
 }
+
+#[test]
+fn binary_content_is_ignored() {
+    // PNG signature includes a NUL byte; body full of \n like a real compressed image would produce
+    let mut png_like = b"\x89PNG\r\n\x1a\x00".to_vec();
+    png_like.extend(std::iter::repeat_n(b'\n', 1000));
+    let (_, ignored) = content_info(&png_like);
+    assert!(ignored);
+}
+
+#[test]
+fn text_content_is_not_ignored() {
+    let (_, ignored) = content_info(b"hello\nworld\n");
+    assert!(!ignored);
+}
