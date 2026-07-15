@@ -13,6 +13,21 @@ Stop your AI agent from turning one file into a monolith. `linecheck` enforces p
 - Works as a CLI, in CI pipelines, and as a library
 - Rust core, WASM bindings, and a Go binding via WASI (npm and pip bindings planned)
 
+## Why linecheck?
+
+Counting lines is easy; enforcing a limit is the actual problem. `cloc`, `tokei`, and `scc` report line counts but have no concept of a threshold — no exit code you can gate CI on. ESLint's `max-lines` gates CI, but only inside a JS/TS ESLint setup, and applies one limit repo-wide. A `wc -l` script in CI can fail a build, but every warn/error tier, per-glob override, and ignore rule has to be hand-rolled and re-maintained.
+
+| | `linecheck` | `cloc` / `tokei` / `scc` | ESLint `max-lines` | `wc -l` script |
+| --- | --- | --- | --- | --- |
+| Per-file / per-glob thresholds | ✅ | ❌ | one rule per config | hand-rolled |
+| Warn vs. error tiers | ✅ | ❌ | ❌ | hand-rolled |
+| CI-friendly exit codes | ✅ | ❌ | ✅ (JS/TS only) | ✅ (hand-rolled) |
+| Language-agnostic | ✅ | ✅ | ❌ | ✅ |
+| `.gitignore`-style nested config | ✅ | ❌ | partial (`overrides`) | ❌ |
+| `--json` / `--status` for dashboards | ✅ | partial | ❌ | ❌ |
+
+Use `cloc`/`tokei`/`scc` for a one-off repo-wide line-count report. Use `linecheck` when you want that check enforced automatically, per language, per directory, every PR.
+
 ## Installation
 
 **Rust / Cargo**
