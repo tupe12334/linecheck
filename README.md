@@ -255,6 +255,10 @@ See the [`examples/`](examples/) folder for ready-to-use setups:
 - `examples/ci/linecheck.sh` — generic CI shell setup (any CI provider)
 - `examples/github/workflow.yml` — GitHub Actions workflow (copy to `.github/workflows/linecheck.yml`)
 
+## Related projects
+
+- [moadim](https://moadim.io/) — loop engineering: build, schedule & run agent loops.
+
 ## License
 
 [MIT](LICENSE)
