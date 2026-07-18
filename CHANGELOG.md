@@ -1,5 +1,11 @@
 # linecheck
 
+## 1.1.1
+
+### Patch Changes
+
+- d59f94b: Enable `clippy::dbg_macro` lint across wasm crates (#13).
+
 ## 1.1.0
 
 ### Minor Changes
