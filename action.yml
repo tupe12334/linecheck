@@ -1,0 +1,40 @@
+name: "linecheck"
+description: "Enforce per-file line-count limits in CI — warn/error thresholds, per-glob rules, no bloated files sneaking past review."
+author: "tupe12334"
+branding:
+  icon: "check-square"
+  color: "blue"
+
+inputs:
+  paths:
+    description: "Space-separated paths to check"
+    required: false
+    default: "."
+  args:
+    description: "Extra CLI flags to pass to linecheck (e.g. --strict, --status, --json)"
+    required: false
+    default: ""
+  version:
+    description: "linecheck version to install (passed to cargo install as --version)"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cache cargo
+      uses: actions/cache@v4
+      with:
+        path: ~/.cargo
+        key: ${{ runner.os }}-cargo-linecheck-${{ inputs.version }}
+
+    - name: Install linecheck
+      shell: bash
+      run: cargo install linecheck ${{ inputs.version && format('--version {0}', inputs.version) || '' }}
+
+    - name: Run linecheck
+      shell: bash
+      run: linecheck ${{ inputs.args }} ${{ inputs.paths }}
