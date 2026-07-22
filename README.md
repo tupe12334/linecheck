@@ -255,6 +255,23 @@ See the [`examples/`](examples/) folder for ready-to-use setups:
 - `examples/ci/linecheck.sh` — generic CI shell setup (any CI provider)
 - `examples/github/workflow.yml` — GitHub Actions workflow (copy to `.github/workflows/linecheck.yml`)
 
+### GitHub Action
+
+`linecheck` is also published as a composite action on the [GitHub Marketplace](https://github.com/marketplace/actions/linecheck), so you don't need to copy a workflow file by hand:
+
+```yaml
+- uses: tupe12334/linecheck@main
+  with:
+    paths: src/
+    args: --strict
+```
+
+| Input | Default | Description |
+| --- | --- | --- |
+| `paths` | `.` | Space-separated paths to check |
+| `args` | *(empty)* | Extra CLI flags (`--strict`, `--status`, `--json`, ...) |
+| `version` | *(latest)* | Pin a specific `linecheck` version |
+
 ## Related projects
 
 - [moadim](https://moadim.io/) — loop engineering: build, schedule & run agent loops.
