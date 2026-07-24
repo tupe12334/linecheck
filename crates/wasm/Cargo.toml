@@ -3,7 +3,7 @@ name = "linecheck-wasm"
 version = "1.1.1"
 edition = "2024"
 license = "MIT"
-description = "WASM bindings for linecheck"
+description = "WASM bindings for linecheck, published to npm as `linecheck`"
 repository = "https://github.com/tupe12334/linecheck"
 publish = false
 
