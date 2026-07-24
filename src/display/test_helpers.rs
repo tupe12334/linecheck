@@ -16,6 +16,7 @@ pub(super) fn unlimited() -> CheckOptions {
         max_lines: None,
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     }
 }
 pub(super) fn with_limits(warn: usize, error: usize) -> CheckOptions {
@@ -23,6 +24,7 @@ pub(super) fn with_limits(warn: usize, error: usize) -> CheckOptions {
         max_lines: None,
         fallback_warn: Some(warn),
         fallback_error: Some(error),
+        skip_whitespace: false,
     }
 }
 pub(super) fn resolver() -> ConfigResolver {
