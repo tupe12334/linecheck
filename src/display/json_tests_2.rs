@@ -34,6 +34,7 @@ fn print_json_zero_limit_zero_percent() {
         max_lines: Some(0),
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     print_json(&[path], &mut resolver(), &opts, true, &mut has_error);
 }

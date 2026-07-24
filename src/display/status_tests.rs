@@ -42,6 +42,7 @@ fn print_status_zero_limit_shows_zero_percent() {
         max_lines: Some(0),
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     print_status(&[path], &mut resolver(), &opts, &mut has_error);
 }

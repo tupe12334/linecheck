@@ -3,34 +3,38 @@ use anyhow::{Context, Result};
 use std::fs;
 use std::path::Path;
 
-// Escape ':' as \x3a so this file does not contain the marker as a raw literal
-// and accidentally ignore itself when linecheck scans its own source tree.
+#[path = "lines_skip_whitespace.rs"]
+mod skip_whitespace;
+#[cfg(test)]
+#[path = "lines_tests.rs"]
+mod tests;
+pub use skip_whitespace::{
+    content_info_with_options, count_non_blank_lines, file_info_with_options,
+};
+
+// Escape ':' as \x3a so this file doesn't contain the marker and self-ignore.
 const IGNORE_MARKER: &[u8] = b"linecheck\x3aignore";
 
-/// Read `path` and return `(line_count, is_ignored)`.
-///
-/// `is_ignored` is `true` when the file contains the ignore marker anywhere.
+/// Read `path` and return `(line_count, is_ignored)`; ignored if the file contains the marker.
 pub fn file_info(path: &Path) -> Result<(usize, bool)> {
     let data = fs::read(path).with_context(|| format!("reading {}", path.display()))?;
     Ok(content_info(&data))
 }
 
-/// Compute `(line_count, is_ignored)` directly from in-memory bytes (used by
-/// WASM bindings). Binary content is treated as ignored — its raw newline
-/// bytes aren't meaningful lines.
+/// Compute `(line_count, is_ignored)` from in-memory bytes; binary content is ignored.
 #[must_use]
 pub fn content_info(data: &[u8]) -> (usize, bool) {
-    let ignored = content_inspector::inspect(data).is_binary()
-        || data
-            .windows(IGNORE_MARKER.len())
-            .any(|w| w == IGNORE_MARKER);
-    (count_newlines(data), ignored)
+    (count_newlines(data), is_ignored(data))
 }
 
-/// Count logical lines in raw file bytes.
-///
-/// A file with no trailing newline has its last line counted anyway, so
-/// `"hello\nworld"` returns 2 just like `"hello\nworld\n"`.
+fn is_ignored(data: &[u8]) -> bool {
+    content_inspector::inspect(data).is_binary()
+        || data
+            .windows(IGNORE_MARKER.len())
+            .any(|w| w == IGNORE_MARKER)
+}
+
+/// Count logical lines; a missing trailing newline still counts the last line.
 #[must_use]
 pub fn count_newlines(data: &[u8]) -> usize {
     if data.is_empty() {
@@ -43,7 +47,3 @@ pub fn count_newlines(data: &[u8]) -> usize {
         newlines
     }
 }
-
-#[cfg(test)]
-#[path = "lines_tests.rs"]
-mod tests;
