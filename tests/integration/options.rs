@@ -13,9 +13,27 @@ fn max_lines_override() {
         max_lines: Some(3),
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     let r = check_file(&path, None, &opts).unwrap();
     assert_eq!(r.status, Status::Error);
+}
+
+#[test]
+fn skip_whitespace_excludes_blank_lines_end_to_end() {
+    let dir = TempDir::new().unwrap();
+    // 2 real lines + 8 blank padding lines, matching the issue's example.
+    let content = format!("real1\nreal2\n{}", "\n".repeat(8));
+    let path = write(dir.path(), "padded.txt", &content);
+    let opts = CheckOptions {
+        max_lines: Some(2),
+        fallback_warn: None,
+        fallback_error: None,
+        skip_whitespace: true,
+    };
+    let r = check_file(&path, None, &opts).unwrap();
+    assert_eq!(r.lines, 2);
+    assert_eq!(r.status, Status::Ok);
 }
 
 #[test]
