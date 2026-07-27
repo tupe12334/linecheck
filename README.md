@@ -209,7 +209,7 @@ Add `linecheck` to your `Cargo.toml` and call `check_file` directly:
 
 ```toml
 [dependencies]
-linecheck = "0.3"
+linecheck = "1.2"
 ```
 
 ```rust
