@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "0 6 * * 1"
 
 jobs:
   test:
@@ -38,6 +40,12 @@ jobs:
 
       - name: Clippy
         run: cargo clippy --all-targets -- -D warnings
+
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@cargo-audit
+
+      - name: Audit
+        run: cargo audit
 
       - name: Build wasm bindings
         run: cargo build -p linecheck-wasm --target wasm32-unknown-unknown --release
