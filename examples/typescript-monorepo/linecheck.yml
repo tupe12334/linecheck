@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
+
+rules:
+  - pattern: "apps/**/*.{ts,tsx}"
+    warn: 120
+    warn_message: "App code is getting long — extract a component or hook"
+    error: 200
+    error_message: "Split this file before merging"
+  - pattern: "packages/**/*.{ts,tsx}"
+    warn: 200
+    error: 400
+
+exclude:
+  - "packages/generated/**"
+  - "node_modules/**"
