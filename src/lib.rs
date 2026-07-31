@@ -15,6 +15,7 @@
 //! ```
 
 pub mod checker;
+mod comments;
 pub mod config;
 pub mod files;
 pub mod lines;

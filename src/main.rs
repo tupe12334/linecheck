@@ -26,6 +26,7 @@ fn main() -> Result<()> {
         max_lines: args.max_lines,
         fallback_warn,
         fallback_error,
+        skip_comments: args.skip_comments,
     };
     let root_cfg = resolver.resolve(&std::env::current_dir().unwrap_or_default().join("__"));
     let files = collect_files(
