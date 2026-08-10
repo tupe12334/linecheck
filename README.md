@@ -259,7 +259,7 @@ See the [`examples/`](examples/) folder for ready-to-use setups:
 
 ### GitHub Action
 
-`linecheck` is also published as a composite action on the [GitHub Marketplace](https://github.com/marketplace/actions/linecheck), so you don't need to copy a workflow file by hand:
+`linecheck` is also available as a composite action ([`action.yml`](action.yml)), so you don't need to copy a workflow file by hand:
 
 ```yaml
 - uses: tupe12334/linecheck@main
