@@ -6,7 +6,7 @@
     "prepare": "git config core.hooksPath .githooks || true",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-version.mjs",
-    "release": "bash scripts/publish.sh"
+    "release": "bash scripts/publish.sh && bash scripts/publish-npm.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",

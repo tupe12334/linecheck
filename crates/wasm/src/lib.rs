@@ -1,5 +1,4 @@
-//! WASM bindings for `linecheck` (not yet published — see the crate's
-//! `publish = false` in Cargo.toml).
+//! WASM bindings for `linecheck`, published to npm as `linecheck`.
 //!
 //! This crate is a thin wrapper: all checking logic lives in the `linecheck`
 //! core crate's [`linecheck::check_content`], which works on in-memory bytes
@@ -8,6 +7,11 @@
 //! point a future Go binding (e.g. via a WASI build consumed by wazero/wasmtime-go,
 //! since `wasm-bindgen`'s JS glue isn't usable from Go) would reuse instead of
 //! reimplementing the check logic.
+//!
+//! The npm package's CLI (`npm/linecheck/bin/cli.js`) is unrelated to this
+//! module — it runs a separate `wasm32-wasip1` build of the root crate's
+//! actual `src/main.rs` binary under Node's WASI runtime, since that binary
+//! needs real filesystem access.
 mod result;
 
 use linecheck::{CheckOptions, Config, check_content};

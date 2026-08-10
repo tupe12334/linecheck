@@ -6,3 +6,5 @@
 /target
 node_modules
 examples/go/go
+/npm/linecheck/dist
+/npm/linecheck/linecheck-cli.wasm
