@@ -53,4 +53,5 @@ tempfile = "3"
 [lints.clippy]
 all = { level = "deny", priority = -1 }
 must_use_candidate = "warn"
+missing_errors_doc = "warn"
 dbg_macro = "deny"

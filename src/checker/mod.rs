@@ -11,6 +11,10 @@ pub use options::CheckOptions;
 use std::path::Path;
 
 /// Check a single file; pass `None` for `config` to fall back to the thresholds in `opts`.
+///
+/// # Errors
+///
+/// Returns an error if `path` cannot be read.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
     let (lines, ignored) = file_info(path)?;
     Ok(build_result(path, lines, ignored, config, opts))

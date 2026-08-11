@@ -10,6 +10,10 @@ const IGNORE_MARKER: &[u8] = b"linecheck\x3aignore";
 /// Read `path` and return `(line_count, is_ignored)`.
 ///
 /// `is_ignored` is `true` when the file contains the ignore marker anywhere.
+///
+/// # Errors
+///
+/// Returns an error if `path` cannot be read.
 pub fn file_info(path: &Path) -> Result<(usize, bool)> {
     let data = fs::read(path).with_context(|| format!("reading {}", path.display()))?;
     Ok(content_info(&data))
