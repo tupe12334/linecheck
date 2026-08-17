@@ -180,6 +180,14 @@ Rules are evaluated in order — the **first matching rule wins**. Put more spec
 
 The optional `warn_message` and `error_message` fields set hints printed alongside violations at each severity level. Both are independent — you can set one, the other, or both. Use them to explain the intent of the limit or point to a team convention.
 
+To point at a config file somewhere other than the resolved [`linecheck.yml`](linecheck.yml), pass `--config`:
+
+```bash
+linecheck --config config/linecheck.strict.yml src/
+```
+
+An explicit `--config` replaces `.gitignore`-style resolution entirely — the named file applies to every path checked, and nested [`linecheck.yml`](linecheck.yml) files are ignored. Naming a file that does not exist is an error (exit `1`).
+
 CLI flags override config file values. Run `linecheck --help` for all options.
 
 ## Ignoring files
