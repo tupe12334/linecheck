@@ -17,6 +17,7 @@
 pub mod checker;
 pub mod config;
 pub mod files;
+mod glob_path;
 pub mod lines;
 pub mod preset;
 pub mod result;
