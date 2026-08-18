@@ -75,3 +75,33 @@ jobs:
 
       - name: Self-check
         run: cargo run -- .
+
+  # Release binaries ship for macOS and Windows, so build and test there too.
+  # Only build/test — coverage, audit and the wasm/Go checks stay on the Test job.
+  cross-platform:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --all-targets --locked
+
+      - name: Test
+        run: cargo test --locked
+
+      - name: Self-check
+        run: cargo run --locked -- .
