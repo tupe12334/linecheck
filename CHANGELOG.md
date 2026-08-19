@@ -1,5 +1,12 @@
 # linecheck
 
+## 1.2.2
+
+### Patch Changes
+
+- f03e2d0: Fix exclude patterns being ignored on Windows: paths are now normalized to `/` before glob matching. CI also builds and tests on macOS and Windows, matching the platforms release binaries are published for.
+- e71061c: Fix the prebuilt-binaries job never triggering: gate it on a missing GitHub release for the current version instead of changesets' `published` output, which stays false under this repo's custom cargo publish script.
+
 ## 1.2.1
 
 ### Patch Changes
