@@ -1,6 +1,9 @@
 # linecheck
 
 [![Crates.io](https://img.shields.io/crates/v/linecheck.svg)](https://crates.io/crates/linecheck)
+[![Downloads](https://img.shields.io/crates/d/linecheck.svg)](https://crates.io/crates/linecheck)
+[![docs.rs](https://img.shields.io/docsrs/linecheck)](https://docs.rs/linecheck)
+[![License: MIT](https://img.shields.io/crates/l/linecheck.svg)](LICENSE)
 [![CI](https://github.com/tupe12334/linecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/tupe12334/linecheck/actions/workflows/ci.yml)
 
 Stop your AI agent from turning one file into a monolith. `linecheck` enforces per-file line limits so bloated files get caught before they pile up.
