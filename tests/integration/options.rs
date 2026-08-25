@@ -19,6 +19,20 @@ fn max_lines_override() {
 }
 
 #[test]
+fn max_lines_exactly_at_threshold_is_ok() {
+    let dir = TempDir::new().unwrap();
+    let content = (0..3).map(|i| format!("line{i}\n")).collect::<String>();
+    let path = write(dir.path(), "file.txt", &content);
+    let opts = CheckOptions {
+        max_lines: Some(3),
+        fallback_warn: None,
+        fallback_error: None,
+    };
+    let r = check_file(&path, None, &opts).unwrap();
+    assert_eq!(r.status, Status::Ok);
+}
+
+#[test]
 fn fallback_defaults_apply_when_no_rule_matches() {
     let dir = TempDir::new().unwrap();
     let content = (0..210).map(|i| format!("line{i}\n")).collect::<String>();
