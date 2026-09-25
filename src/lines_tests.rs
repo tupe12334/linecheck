@@ -47,3 +47,39 @@ fn text_content_is_not_ignored() {
     let (_, ignored) = content_info(b"hello\nworld\n");
     assert!(!ignored);
 }
+
+#[test]
+fn count_non_blank_lines_skips_blank_and_whitespace_only_lines() {
+    assert_eq!(count_non_blank_lines(b"a\n\nb\n   \nc\n"), 3);
+}
+
+#[test]
+fn count_non_blank_lines_all_blank_is_zero() {
+    assert_eq!(count_non_blank_lines(b"\n\n   \n\t\n"), 0);
+}
+
+#[test]
+fn count_non_blank_lines_matches_count_newlines_when_no_blank_lines() {
+    assert_eq!(
+        count_non_blank_lines(b"a\nb\nc"),
+        count_newlines(b"a\nb\nc")
+    );
+}
+
+#[test]
+fn count_non_blank_lines_empty_is_zero() {
+    assert_eq!(count_non_blank_lines(b""), 0);
+}
+
+#[test]
+fn content_info_with_options_off_matches_content_info() {
+    let data = b"a\n\nb\n";
+    assert_eq!(content_info_with_options(data, false), content_info(data));
+}
+
+#[test]
+fn content_info_with_options_on_excludes_blank_lines() {
+    let (lines, ignored) = content_info_with_options(b"a\n\nb\n   \n", true);
+    assert_eq!(lines, 2);
+    assert!(!ignored);
+}
