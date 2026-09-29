@@ -3,9 +3,7 @@ use glob::Pattern;
 use std::path::Path;
 
 pub(super) fn excluded(path: &Path, root: Option<&Path>, pats: &[Pattern]) -> bool {
-    if let Some(root) = root
-        && let Ok(rel) = path.strip_prefix(root)
-    {
+    if let Some(rel) = root.and_then(|r| path.strip_prefix(r).ok()) {
         let s = glob_path(rel);
         if pats.iter().any(|p| p.matches(&s)) {
             return true;
