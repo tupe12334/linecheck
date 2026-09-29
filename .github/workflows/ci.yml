@@ -105,3 +105,26 @@ jobs:
 
       - name: Self-check
         run: cargo run --locked -- .
+
+  # Cargo.toml declares `rust-version = "1.85"`; verify it so a dependency bump
+  # (e.g. from Dependabot) can't silently raise the real MSRV.
+  msrv:
+    name: MSRV (1.85)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1.85
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-msrv-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --all-targets --locked
+
+      - name: Test
+        run: cargo test --locked
