@@ -1,5 +1,14 @@
 # linecheck
 
+## 1.2.2
+
+### Patch Changes
+
+- f03e2d0: Fix exclude patterns being ignored on Windows: paths are now normalized to `/` before glob matching. CI also builds and tests on macOS and Windows, matching the platforms release binaries are published for.
+- e71061c: Fix the prebuilt-binaries job never triggering: gate it on a missing GitHub release for the current version instead of changesets' `published` output, which stays false under this repo's custom cargo publish script.
+- 063a37d: Ship the `x86_64-apple-darwin` (Intel Mac) prebuilt binary again: its release job was pinned to the retired `macos-13` runner and never ran, so v1.2.2 has no Intel Mac asset. It now cross-compiles on `macos-latest`.
+- ed24971: Restore the declared minimum supported Rust version (1.85): a let-chain (stable only since 1.88) in exclude-pattern matching broke `cargo install linecheck` on Rust 1.85–1.87. CI now builds and tests on 1.85 so the `rust-version` promise can't regress.
+
 ## 1.2.1
 
 ### Patch Changes
