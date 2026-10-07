@@ -258,6 +258,7 @@ See the [`examples/`](examples/) folder for ready-to-use setups:
 - `examples/ci/linecheck.sh` — generic CI shell setup (any CI provider)
 - `examples/github/workflow.yml` — GitHub Actions workflow (copy to `.github/workflows/linecheck.yml`)
 - `examples/typescript-monorepo/` — per-package thresholds in a JS/TS monorepo (`apps/**` vs `packages/**`, generated code excluded)
+- `examples/python-monorepo/` — per-directory thresholds in a Python monorepo (`services/**` vs `libs/**`, tests get their own limit, migrations excluded)
 - `examples/go/` — calling linecheck from Go via WASI (no cgo)
 
 ### GitHub Action
