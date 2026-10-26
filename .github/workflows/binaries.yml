@@ -79,6 +79,11 @@ jobs:
           else
             tar czf "$ARCHIVE.tar.gz" "$ARCHIVE"
           fi
+          # Checksum file lets non-Rust CI verify the download: `sha256sum -c <archive>.sha256`.
+          for F in "$ARCHIVE".zip "$ARCHIVE".tar.gz; do
+            [[ -f "$F" ]] || continue
+            if command -v sha256sum >/dev/null; then sha256sum "$F"; else shasum -a 256 "$F"; fi > "$F.sha256"
+          done
 
       - name: Upload to release
         shell: bash
