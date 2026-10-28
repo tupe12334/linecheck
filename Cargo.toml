@@ -15,7 +15,7 @@ repository = "https://github.com/tupe12334/linecheck"
 homepage = "https://github.com/tupe12334/linecheck"
 readme = "README.md"
 documentation = "https://docs.rs/linecheck"
-keywords = ["lint", "lines", "cli", "check", "ai"]
+keywords = ["lint", "cli", "line-count", "loc", "ci"]
 categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".changeset/**",
