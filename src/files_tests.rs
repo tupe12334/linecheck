@@ -43,3 +43,16 @@ fn collect_files_nonexistent_path_warns_to_stderr() {
     let files = collect_files(&[path], &[]);
     assert!(files.is_empty());
 }
+
+#[test]
+fn collect_files_skips_gitignored_entries() {
+    let dir = TempDir::new().unwrap();
+    fs::create_dir(dir.path().join(".git")).unwrap();
+    fs::write(dir.path().join(".gitignore"), "build/\n").unwrap();
+    fs::create_dir(dir.path().join("build")).unwrap();
+    fs::write(dir.path().join("build/out.txt"), "x\n").unwrap();
+    fs::write(dir.path().join("kept.txt"), "x\n").unwrap();
+    let files = collect_files(&[dir.path().to_path_buf()], &[]);
+    assert!(files.iter().any(|f| f.ends_with("kept.txt")));
+    assert!(!files.iter().any(|f| f.ends_with("out.txt")));
+}
