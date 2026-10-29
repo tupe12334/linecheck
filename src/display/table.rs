@@ -22,7 +22,7 @@ pub(super) fn print_table(rows: &[Row]) {
         let tag = match row.status {
             Status::Error => "[ERROR]".to_owned(),
             Status::Warn => "[WARN]".to_owned(),
-            _ => format!("{pct}%"),
+            Status::Ok => format!("{pct}%"),
         };
         println!(
             "{:<pw$}  {:>lw$} / {:<tw$}  {}",
