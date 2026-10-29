@@ -27,5 +27,6 @@ pub fn opts_unlimited() -> CheckOptions {
         max_lines: None,
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     }
 }

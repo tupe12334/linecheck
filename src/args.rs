@@ -30,6 +30,8 @@ pub struct Args {
     pub loose: bool,
     #[arg(long, help = "Preset: unlimited (disable all limits)")]
     pub free: bool,
+    #[arg(long, help = "Exclude blank/whitespace-only lines from the line count")]
+    pub skip_whitespace: bool,
 }
 
 impl Args {

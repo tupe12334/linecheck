@@ -26,6 +26,7 @@ fn config_resolver_walks_up_to_parent() {
             max_lines: None,
             fallback_warn: None,
             fallback_error: None,
+            skip_whitespace: false,
         },
     )
     .unwrap();
@@ -60,6 +61,7 @@ fn nested_config_overrides_parent() {
             max_lines: None,
             fallback_warn: None,
             fallback_error: None,
+            skip_whitespace: false,
         },
     )
     .unwrap();

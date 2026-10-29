@@ -3,7 +3,7 @@ mod build;
 mod options;
 mod resolve;
 use crate::config::Config;
-use crate::lines::{content_info, file_info};
+use crate::lines::{content_info_with_options, file_info_with_options};
 use crate::result::FileResult;
 use anyhow::Result;
 use build::build_result;
@@ -12,7 +12,7 @@ use std::path::Path;
 
 /// Check a single file; pass `None` for `config` to fall back to the thresholds in `opts`.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
-    let (lines, ignored) = file_info(path)?;
+    let (lines, ignored) = file_info_with_options(path, opts.skip_whitespace)?;
     Ok(build_result(path, lines, ignored, config, opts))
 }
 
@@ -28,7 +28,7 @@ pub fn check_content(
     config: Option<&Config>,
     opts: &CheckOptions,
 ) -> FileResult {
-    let (lines, ignored) = content_info(content);
+    let (lines, ignored) = content_info_with_options(content, opts.skip_whitespace);
     build_result(path, lines, ignored, config, opts)
 }
 
