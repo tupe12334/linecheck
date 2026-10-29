@@ -22,6 +22,7 @@ pub struct FileResult {
     pub warn_limit: Option<usize>,
     /// The error threshold that applied, if any.
     pub error_limit: Option<usize>,
-    /// Human-readable hint from the matched rule's `message` field, if set.
+    /// Human-readable hint from the matched rule's `warn_message` or `error_message` field —
+    /// whichever corresponds to `status` — if set.
     pub message: Option<String>,
 }
