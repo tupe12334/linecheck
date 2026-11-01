@@ -17,6 +17,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -45,6 +46,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # GITHUB_TOKEN pushes do not trigger pull_request workflows, so the
+      # release PR never gets CI. Dispatch CI explicitly (workflow_dispatch
+      # is the one event GITHUB_TOKEN may trigger).
+      - name: Run CI on release PR
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref changeset-release/main
 
       # changesets/action only reports published=true for `changeset publish`
       # output; this repo publishes via a custom cargo script, so detect a
