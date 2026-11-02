@@ -15,9 +15,9 @@ fn main() -> Result<()> {
     let preset = args
         .strict
         .then_some(Preset::Strict)
-        .or(args.default_preset.then_some(Preset::Default))
-        .or(args.loose.then_some(Preset::Loose))
-        .or(args.free.then_some(Preset::Free));
+        .or_else(|| args.default_preset.then_some(Preset::Default))
+        .or_else(|| args.loose.then_some(Preset::Loose))
+        .or_else(|| args.free.then_some(Preset::Free));
     let (fallback_warn, fallback_error) = preset.map(|p: Preset| p.limits()).unwrap_or((
         Some(linecheck::preset::DEFAULT_WARN),
         Some(linecheck::preset::DEFAULT_ERROR),
