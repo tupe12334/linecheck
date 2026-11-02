@@ -2,10 +2,11 @@
 mod filters;
 use filters::excluded;
 use glob::Pattern;
-use std::path::{Path, PathBuf};
-use walkdir::WalkDir;
+use ignore::WalkBuilder;
+use std::path::PathBuf;
 
-/// Collect all files reachable from `paths`, skipping excluded or hidden paths.
+/// Collect all files reachable from `paths`, skipping excluded, hidden, or
+/// `.gitignore`d paths.
 #[must_use]
 pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
     let pats: Vec<Pattern> = exclude
@@ -19,14 +20,14 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
                 files.push(path.clone());
             }
         } else if path.is_dir() {
-            for e in WalkDir::new(path)
+            let root = path.clone();
+            let pats = pats.clone();
+            for e in WalkBuilder::new(path)
                 .follow_links(false)
-                .into_iter()
-                .filter_entry(|e| {
-                    (e.depth() == 0 || !hidden(e.path())) && !excluded(e.path(), Some(path), &pats)
-                })
-                .filter_map(|e| e.ok())
-                .filter(|e| e.file_type().is_file())
+                .filter_entry(move |e| !excluded(e.path(), Some(&root), &pats))
+                .build()
+                .filter_map(Result::ok)
+                .filter(|e| e.file_type().is_some_and(|t| t.is_file()))
             {
                 files.push(e.into_path());
             }
@@ -35,12 +36,6 @@ pub fn collect_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
         }
     }
     files
-}
-
-fn hidden(path: &Path) -> bool {
-    path.file_name()
-        .and_then(|n| n.to_str())
-        .is_some_and(|s| s.starts_with('.') && s.len() > 1)
 }
 
 #[cfg(test)]
