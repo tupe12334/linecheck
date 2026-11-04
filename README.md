@@ -48,13 +48,17 @@ BASE="https://github.com/tupe12334/linecheck/releases/download/$TAG/$ARCHIVE"
 
 curl -LO "$BASE"
 curl -LO "$BASE.sha256"
-# macOS has no sha256sum; shasum ships with both macOS and Linux.
-shasum -a 256 -c "$ARCHIVE.sha256"
+# macOS has no sha256sum, and slim Linux images have no shasum. Use whichever exists.
+if command -v sha256sum >/dev/null; then sha256sum -c "$ARCHIVE.sha256"; else shasum -a 256 -c "$ARCHIVE.sha256"; fi
 tar xzf "$ARCHIVE"
 sudo install "linecheck-$TAG-$TARGET/linecheck" /usr/local/bin/
 ```
 
-On Windows, download `linecheck-$TAG-x86_64-pc-windows-msvc.zip` from the same release.
+On Windows, download `linecheck-$TAG-x86_64-pc-windows-msvc.zip` from the same release; it
+unpacks to a folder holding `linecheck.exe`.
+
+The Linux archives are glibc builds (`-gnu`), so they do not run on musl distributions such
+as Alpine — use `cargo install linecheck` there.
 
 **Rust / Cargo**
 ```bash
