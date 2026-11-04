@@ -33,6 +33,26 @@ Use `cloc`/`tokei`/`scc` for a one-off repo-wide line-count report. Use `lineche
 
 ## Installation
 
+**Prebuilt binary** — no Rust toolchain required. Every release ships a self-contained
+binary for Linux (`x86_64`, `aarch64`), macOS (Intel, Apple Silicon) and Windows
+(`x86_64`), each with a `.sha256` checksum file. Browse them on the
+[latest release](https://github.com/tupe12334/linecheck/releases/latest).
+
+```bash
+TAG=v1.2.2
+# x86_64-unknown-linux-gnu | aarch64-unknown-linux-gnu | x86_64-apple-darwin | aarch64-apple-darwin
+TARGET=x86_64-unknown-linux-gnu
+BASE="https://github.com/tupe12334/linecheck/releases/download/$TAG/linecheck-$TAG-$TARGET.tar.gz"
+
+curl -LO "$BASE"
+curl -LO "$BASE.sha256"
+sha256sum -c "linecheck-$TAG-$TARGET.tar.gz.sha256"
+tar xzf "linecheck-$TAG-$TARGET.tar.gz"
+sudo install "linecheck-$TAG-$TARGET/linecheck" /usr/local/bin/
+```
+
+On Windows, download `linecheck-$TAG-x86_64-pc-windows-msvc.zip` from the same release.
+
 **Rust / Cargo**
 ```bash
 cargo install linecheck
