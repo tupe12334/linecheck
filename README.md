@@ -39,15 +39,18 @@ binary for Linux (`x86_64`, `aarch64`), macOS (Intel, Apple Silicon) and Windows
 [latest release](https://github.com/tupe12334/linecheck/releases/latest).
 
 ```bash
-TAG=v1.2.2
+# Newest tag, so this block never goes stale:
+TAG=$(curl -fsSL https://api.github.com/repos/tupe12334/linecheck/releases/latest | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p')
 # x86_64-unknown-linux-gnu | aarch64-unknown-linux-gnu | x86_64-apple-darwin | aarch64-apple-darwin
 TARGET=x86_64-unknown-linux-gnu
-BASE="https://github.com/tupe12334/linecheck/releases/download/$TAG/linecheck-$TAG-$TARGET.tar.gz"
+ARCHIVE="linecheck-$TAG-$TARGET.tar.gz"
+BASE="https://github.com/tupe12334/linecheck/releases/download/$TAG/$ARCHIVE"
 
 curl -LO "$BASE"
 curl -LO "$BASE.sha256"
-sha256sum -c "linecheck-$TAG-$TARGET.tar.gz.sha256"
-tar xzf "linecheck-$TAG-$TARGET.tar.gz"
+# macOS has no sha256sum; shasum ships with both macOS and Linux.
+shasum -a 256 -c "$ARCHIVE.sha256"
+tar xzf "$ARCHIVE"
 sudo install "linecheck-$TAG-$TARGET/linecheck" /usr/local/bin/
 ```
 
