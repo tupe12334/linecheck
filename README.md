@@ -1,6 +1,9 @@
 # linecheck
 
 [![Crates.io](https://img.shields.io/crates/v/linecheck.svg)](https://crates.io/crates/linecheck)
+[![Downloads](https://img.shields.io/crates/d/linecheck.svg)](https://crates.io/crates/linecheck)
+[![docs.rs](https://img.shields.io/docsrs/linecheck)](https://docs.rs/linecheck)
+[![License: MIT](https://img.shields.io/crates/l/linecheck.svg)](LICENSE)
 [![CI](https://github.com/tupe12334/linecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/tupe12334/linecheck/actions/workflows/ci.yml)
 
 Stop your AI agent from turning one file into a monolith. `linecheck` enforces per-file line limits so bloated files get caught before they pile up.
@@ -29,6 +32,33 @@ Counting lines is easy; enforcing a limit is the actual problem. `cloc`, `tokei`
 Use `cloc`/`tokei`/`scc` for a one-off repo-wide line-count report. Use `linecheck` when you want that check enforced automatically, per language, per directory, every PR.
 
 ## Installation
+
+**Prebuilt binary** — no Rust toolchain required. Every release ships a self-contained
+binary for Linux (`x86_64`, `aarch64`), macOS (Intel, Apple Silicon) and Windows
+(`x86_64`), each with a `.sha256` checksum file. Browse them on the
+[latest release](https://github.com/tupe12334/linecheck/releases/latest).
+
+```bash
+# Newest tag, so this block never goes stale:
+TAG=$(curl -fsSL https://api.github.com/repos/tupe12334/linecheck/releases/latest | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p')
+# x86_64-unknown-linux-gnu | aarch64-unknown-linux-gnu | x86_64-apple-darwin | aarch64-apple-darwin
+TARGET=x86_64-unknown-linux-gnu
+ARCHIVE="linecheck-$TAG-$TARGET.tar.gz"
+BASE="https://github.com/tupe12334/linecheck/releases/download/$TAG/$ARCHIVE"
+
+curl -LO "$BASE"
+curl -LO "$BASE.sha256"
+# macOS has no sha256sum, and slim Linux images have no shasum. Use whichever exists.
+if command -v sha256sum >/dev/null; then sha256sum -c "$ARCHIVE.sha256"; else shasum -a 256 -c "$ARCHIVE.sha256"; fi
+tar xzf "$ARCHIVE"
+sudo install "linecheck-$TAG-$TARGET/linecheck" /usr/local/bin/
+```
+
+On Windows, download `linecheck-$TAG-x86_64-pc-windows-msvc.zip` from the same release; it
+unpacks to a folder holding `linecheck.exe`.
+
+The Linux archives are glibc builds (`-gnu`), so they do not run on musl distributions such
+as Alpine — use `cargo install linecheck` there.
 
 **Rust / Cargo**
 ```bash
@@ -255,11 +285,12 @@ See the [`examples/`](examples/) folder for ready-to-use setups:
 - `examples/ci/linecheck.sh` — generic CI shell setup (any CI provider)
 - `examples/github/workflow.yml` — GitHub Actions workflow (copy to `.github/workflows/linecheck.yml`)
 - `examples/typescript-monorepo/` — per-package thresholds in a JS/TS monorepo (`apps/**` vs `packages/**`, generated code excluded)
+- `examples/python-monorepo/` — per-directory thresholds in a Python monorepo (`services/**` vs `libs/**`, tests get their own limit, migrations excluded)
 - `examples/go/` — calling linecheck from Go via WASI (no cgo)
 
 ### GitHub Action
 
-`linecheck` is also published as a composite action on the [GitHub Marketplace](https://github.com/marketplace/actions/linecheck), so you don't need to copy a workflow file by hand:
+`linecheck` is also available as a composite action ([`action.yml`](action.yml)), so you don't need to copy a workflow file by hand:
 
 ```yaml
 - uses: tupe12334/linecheck@main

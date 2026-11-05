@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/tupe12334/linecheck/main/schema/linecheck.schema.json
+
+rules:
+  - pattern: "**/test_*.py"
+    warn: 300
+    error: 500
+  - pattern: "services/**/*.py"
+    warn: 150
+    warn_message: "Service module is getting long — move logic into libs/"
+    error: 250
+    error_message: "Split this module before merging"
+  - pattern: "libs/**/*.py"
+    warn: 300
+    error: 500
+
+exclude:
+  - "**/migrations/**"
+  - "**/__pycache__/**"
+  - ".venv/**"

@@ -1,5 +1,6 @@
 use super::CheckOptions;
 use crate::config::Config;
+use crate::glob_path::glob_path;
 use glob::Pattern;
 use std::path::Path;
 
@@ -12,7 +13,7 @@ pub(super) fn resolve_limits(
         return (Some(max), Some(max), None, None);
     }
     if let Some(cfg) = config {
-        let s = path.to_string_lossy();
+        let s = glob_path(path);
         let path_str = s.strip_prefix("./").unwrap_or(&s);
         let fname_matches = |pat: &Pattern| {
             path.file_name()
