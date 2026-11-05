@@ -35,6 +35,7 @@ fn check_file_with_invalid_glob_rule_falls_back_to_defaults() {
         max_lines: None,
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     let result = check_file(f.path(), Some(&cfg), &opts).unwrap();
     assert_eq!(result.status, Status::Ok);
@@ -72,6 +73,7 @@ fn non_matching_rule_is_skipped_and_next_rule_wins() {
         max_lines: None,
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     let result = check_file(f.path(), Some(&cfg), &opts).unwrap();
     assert_eq!(result.error_limit, Some(99));
@@ -97,6 +99,7 @@ fn check_content_matches_rule_by_virtual_path() {
         max_lines: None,
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     let result = check_content(
         Path::new("src/main.rs"),
@@ -117,6 +120,7 @@ fn check_content_respects_ignore_marker() {
         max_lines: Some(0),
         fallback_warn: None,
         fallback_error: None,
+        skip_whitespace: false,
     };
     // Escape ':' as \x3a so this test file doesn't self-ignore.
     let result = check_content(
@@ -125,5 +129,37 @@ fn check_content_respects_ignore_marker() {
         None,
         &opts,
     );
+    assert_eq!(result.status, Status::Ok);
+}
+
+#[test]
+fn skip_whitespace_unset_counts_blank_lines() {
+    use std::path::Path;
+
+    let opts = CheckOptions {
+        max_lines: Some(2),
+        fallback_warn: None,
+        fallback_error: None,
+        skip_whitespace: false,
+    };
+    let padded = format!("real1\nreal2\n{}", "\n".repeat(8));
+    let result = check_content(Path::new("padded.txt"), padded.as_bytes(), None, &opts);
+    assert_eq!(result.lines, 10);
+    assert_eq!(result.status, Status::Error);
+}
+
+#[test]
+fn skip_whitespace_set_excludes_blank_lines() {
+    use std::path::Path;
+
+    let opts = CheckOptions {
+        max_lines: Some(2),
+        fallback_warn: None,
+        fallback_error: None,
+        skip_whitespace: true,
+    };
+    let padded = format!("real1\nreal2\n{}", "\n".repeat(8));
+    let result = check_content(Path::new("padded.txt"), padded.as_bytes(), None, &opts);
+    assert_eq!(result.lines, 2);
     assert_eq!(result.status, Status::Ok);
 }
