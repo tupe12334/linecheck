@@ -21,3 +21,4 @@ serde-wasm-bindgen = "0.6"
 all = { level = "deny", priority = -1 }
 must_use_candidate = "warn"
 dbg_macro = "deny"
+semicolon_if_nothing_returned = "deny"
