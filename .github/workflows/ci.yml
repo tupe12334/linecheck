@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
 
 jobs:
   test:
@@ -39,6 +42,12 @@ jobs:
       - name: Clippy
         run: cargo clippy --all-targets -- -D warnings
 
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@cargo-audit
+
+      - name: Audit
+        run: cargo audit
+
       - name: Build wasm bindings
         run: cargo build -p linecheck-wasm --target wasm32-unknown-unknown --release
 
@@ -67,3 +76,56 @@ jobs:
 
       - name: Self-check
         run: cargo run -- .
+
+  # Release binaries ship for macOS and Windows, so build and test there too.
+  # Only build/test — coverage, audit and the wasm/Go checks stay on the Test job.
+  cross-platform:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --all-targets --locked
+
+      - name: Test
+        run: cargo test --locked
+
+      - name: Self-check
+        run: cargo run --locked -- .
+
+  # Cargo.toml declares `rust-version = "1.85"`; verify it so a dependency bump
+  # (e.g. from Dependabot) can't silently raise the real MSRV.
+  msrv:
+    name: MSRV (1.85)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1.85
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-msrv-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --all-targets --locked
+
+      - name: Test
+        run: cargo test --locked

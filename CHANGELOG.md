@@ -1,5 +1,14 @@
 # linecheck
 
+## 1.2.1
+
+### Patch Changes
+
+- 5ef9d25: Add a worked TypeScript-monorepo example (per-glob thresholds) to the README. (#29)
+- 5ef9d25: Fix a stale Cargo.toml version example in the README that still showed `linecheck = "0.3"` instead of the current `"1.2"`. (#27)
+- a612b8a: Publish prebuilt binaries: each release now creates a `vX.Y.Z` git tag and a GitHub release with prebuilt `linecheck` binaries for Linux (x86_64, aarch64), macOS (x86_64, aarch64), and Windows (x86_64), so non-Rust CI can install without a toolchain.
+- 84f4b6e: Fix stale `Cargo.lock`: the release version-sync script now re-locks workspace member versions, so `cargo build --locked` (used by the prebuilt-binary release workflow) no longer fails after a version bump.
+
 ## 1.2.0
 
 ### Minor Changes

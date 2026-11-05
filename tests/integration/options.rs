@@ -20,6 +20,21 @@ fn max_lines_override() {
 }
 
 #[test]
+fn max_lines_exactly_at_threshold_is_ok() {
+    let dir = TempDir::new().unwrap();
+    let content = (0..3).map(|i| format!("line{i}\n")).collect::<String>();
+    let path = write(dir.path(), "file.txt", &content);
+    let opts = CheckOptions {
+        max_lines: Some(3),
+        fallback_warn: None,
+        fallback_error: None,
+        skip_whitespace: false,
+    };
+    let r = check_file(&path, None, &opts).unwrap();
+    assert_eq!(r.status, Status::Ok);
+}
+
+#[test]
 fn skip_whitespace_excludes_blank_lines_end_to_end() {
     let dir = TempDir::new().unwrap();
     // 2 real lines + 8 blank padding lines, matching the issue's example.

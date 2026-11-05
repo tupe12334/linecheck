@@ -11,15 +11,19 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    outputs:
+      needs-binaries: ${{ steps.version.outputs.needs-binaries }}
+      version: ${{ steps.version.outputs.version }}
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - uses: pnpm/action-setup@v4
         with:
@@ -42,3 +46,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # GITHUB_TOKEN pushes do not trigger pull_request workflows, so the
+      # release PR never gets CI. Dispatch CI explicitly (workflow_dispatch
+      # is the one event GITHUB_TOKEN may trigger).
+      - name: Run CI on release PR
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref changeset-release/main
+
+      # changesets/action only reports published=true for `changeset publish`
+      # output; this repo publishes via a custom cargo script, so detect a
+      # fresh release by the absence of a GitHub release for the current version.
+      - name: Check for missing release
+        id: version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "needs-binaries=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs-binaries=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  binaries:
+    name: Binaries
+    needs: release
+    if: needs.release.outputs.needs-binaries == 'true'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/binaries.yml
+    with:
+      tag: v${{ needs.release.outputs.version }}

@@ -1,5 +1,6 @@
 // Reads the version from package.json and writes it back to every Cargo.toml,
 // keeping them in sync after `changeset version` bumps package.json.
+import { execSync } from "child_process";
 import { readFileSync, writeFileSync } from "fs";
 
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
@@ -16,4 +17,7 @@ for (const path of ["Cargo.toml", "crates/wasm/Cargo.toml"]) {
   writeFileSync(path, cargo);
 }
 
-console.log(`Synced version ${version} to Cargo.toml files`);
+// Re-lock workspace member versions so `cargo build --locked` keeps working.
+execSync("cargo update --workspace", { stdio: "inherit" });
+
+console.log(`Synced version ${version} to Cargo.toml files and Cargo.lock`);
