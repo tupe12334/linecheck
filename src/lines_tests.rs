@@ -91,3 +91,9 @@ fn skip_comments_on_empty_data() {
     let (lines, _) = content_info(Path::new("main.rs"), b"", true);
     assert_eq!(lines, 0);
 }
+
+#[test]
+fn skip_comments_uses_double_dash_for_lua() {
+    let (lines, _) = content_info(Path::new("init.lua"), b"-- note\nprint(1)\n", true);
+    assert_eq!(lines, 1);
+}
