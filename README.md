@@ -293,11 +293,13 @@ See the [`examples/`](examples/) folder for ready-to-use setups:
 `linecheck` is also available as a composite action ([`action.yml`](action.yml)), so you don't need to copy a workflow file by hand:
 
 ```yaml
-- uses: tupe12334/linecheck@main
+- uses: tupe12334/linecheck@v1.2.2
   with:
     paths: src/
     args: --strict
 ```
+
+Pin to a [release tag](https://github.com/tupe12334/linecheck/releases) (or a commit SHA), not `@main`, so a new commit on `main` can't change your CI.
 
 | Input | Default | Description |
 | --- | --- | --- |
