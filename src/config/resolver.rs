@@ -38,6 +38,9 @@ impl ConfigResolver {
             .or_insert_with(|| {
                 fs::read_to_string(&path).ok().and_then(|s| {
                     serde_yaml::from_str::<Config>(&s)
+                        .inspect_err(|e| {
+                            eprintln!("Warning: failed to parse config {}: {e}", path.display());
+                        })
                         .ok()
                         .inspect(|c| warn_invalid_patterns(c, &path))
                 })
