@@ -26,15 +26,14 @@ fn main() -> Result<()> {
         max_lines: args.max_lines,
         fallback_warn,
         fallback_error,
+        skip_whitespace: args.skip_whitespace,
     };
     let root_cfg = resolver.resolve(&std::env::current_dir().unwrap_or_default().join("__"));
-    let files = collect_files(
-        &args.paths,
-        &root_cfg
-            .as_ref()
-            .map(|c| c.exclude.clone())
-            .unwrap_or_default(),
-    );
+    let exclude = root_cfg
+        .as_ref()
+        .map(|c| c.exclude.clone())
+        .unwrap_or_default();
+    let files = collect_files(&args.paths, &exclude);
     let mut has_error = false;
     if args.json {
         print_json(&files, &mut resolver, &opts, args.status, &mut has_error);

@@ -13,6 +13,8 @@ pub struct Args {
     pub paths: Vec<PathBuf>,
     #[arg(long, help = "Override line limit for all files")]
     pub max_lines: Option<usize>,
+    #[arg(long, help = "Exclude blank/whitespace-only lines from line counts")]
+    pub skip_whitespace: bool,
     #[arg(long, default_value = "linecheck.yml", help = "Path to config file")]
     pub config: PathBuf,
     #[arg(
