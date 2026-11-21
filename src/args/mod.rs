@@ -1,3 +1,6 @@
+mod config_path;
+mod limits;
+
 use clap::{ArgGroup, Parser};
 use std::path::PathBuf;
 
@@ -13,6 +16,11 @@ pub struct Args {
     pub paths: Vec<PathBuf>,
     #[arg(long, help = "Override line limit for all files")]
     pub max_lines: Option<usize>,
+    #[arg(
+        long,
+        help = "Exclude full-line comments from line counts (recognized languages only)"
+    )]
+    pub skip_comments: bool,
     #[arg(long, default_value = "linecheck.yml", help = "Path to config file")]
     pub config: PathBuf,
     #[arg(
@@ -30,18 +38,4 @@ pub struct Args {
     pub loose: bool,
     #[arg(long, help = "Preset: unlimited (disable all limits)")]
     pub free: bool,
-}
-
-impl Args {
-    pub fn config_path(&self) -> Option<std::path::PathBuf> {
-        let c = &self.config;
-        if c.strip_prefix(".").unwrap_or(c) != std::path::Path::new("linecheck.yml") {
-            if !c.exists() {
-                eprintln!("Error: config file '{}' not found", c.display());
-                std::process::exit(1);
-            }
-            return Some(c.clone());
-        }
-        None
-    }
 }

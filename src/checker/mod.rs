@@ -12,7 +12,7 @@ use std::path::Path;
 
 /// Check a single file; pass `None` for `config` to fall back to the thresholds in `opts`.
 pub fn check_file(path: &Path, config: Option<&Config>, opts: &CheckOptions) -> Result<FileResult> {
-    let (lines, ignored) = file_info(path)?;
+    let (lines, ignored) = file_info(path, opts.skip_comments)?;
     Ok(build_result(path, lines, ignored, config, opts))
 }
 
@@ -28,7 +28,7 @@ pub fn check_content(
     config: Option<&Config>,
     opts: &CheckOptions,
 ) -> FileResult {
-    let (lines, ignored) = content_info(content);
+    let (lines, ignored) = content_info(path, content, opts.skip_comments);
     build_result(path, lines, ignored, config, opts)
 }
 

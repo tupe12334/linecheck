@@ -9,6 +9,9 @@ pub struct CheckOptions {
     pub fallback_warn: Option<usize>,
     /// Error threshold used when no config rule matches the file. `None` means no error limit.
     pub fallback_error: Option<usize>,
+    /// When `true`, full-line comments are excluded from a file's line count,
+    /// for languages `linecheck` recognizes by file extension.
+    pub skip_comments: bool,
 }
 
 impl Default for CheckOptions {
@@ -17,6 +20,7 @@ impl Default for CheckOptions {
             max_lines: None,
             fallback_warn: Some(DEFAULT_WARN),
             fallback_error: Some(DEFAULT_ERROR),
+            skip_comments: false,
         }
     }
 }
