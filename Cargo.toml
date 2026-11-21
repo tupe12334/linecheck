@@ -54,3 +54,4 @@ tempfile = "3"
 all = { level = "deny", priority = -1 }
 must_use_candidate = "warn"
 dbg_macro = "deny"
+or_fun_call = "deny"
