@@ -30,5 +30,5 @@ pub fn print_violations(
         if r.status == Status::Error {
             *has_error = true;
         }
-    })
+    });
 }
